@@ -1,0 +1,30 @@
+[Bb]in/
+[Oo]bj/
+*.user
+*.rsuser
+*.suo
+*.cache
+*.log
+*.vs/
+.vscode/
+*.dbmdl
+*.bak
+*.mdf
+*.ldf
+*.pdb
+*.tmp
+*.lock.json
+*.DS_Store
+*.local
+
+# NuGet
+*.nupkg
+packages/
+
+# Build
+project.lock.json
+artifacts/
+
+# Secrets
+appsettings.Development.json
+secrets.json
