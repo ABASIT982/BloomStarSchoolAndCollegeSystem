@@ -1,0 +1,12 @@
+﻿@* Pages/Shared/_AdminSidebar.cshtml *@
+<nav class="hidden md:block w-64 bg-gradient-to-b from-blue-900 to-indigo-900 text-blue-100 min-h-screen fixed top-20 left-0 p-4">
+    <ul class="space-y-2">
+        <li><a asp-page="/Admin/Index" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li><a asp-page="/Admin/Students" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-people-fill"></i> Students</a></li>
+        <li><a asp-page="/Admin/Teachers" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-person-badge"></i> Teachers</a></li>
+        <li><a asp-page="/Admin/Admissions" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-journal-text"></i> Admissions</a></li>
+        <li><a asp-page="/Admin/Finance" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-cash-coin"></i> Finance</a></li>
+        <li><a asp-page="/Admin/Reports" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-bar-chart-line"></i> Reports</a></li>
+        <li><a asp-page="/Admin/Settings" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800"><i class="bi bi-gear-fill"></i> Settings</a></li>
+    </ul>
+</nav>

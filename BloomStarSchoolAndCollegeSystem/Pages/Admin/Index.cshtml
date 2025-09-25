@@ -1,0 +1,40 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+<div class="dashboard-grid">
+    <div class="glass-card">
+        <i class="bi bi-people-fill"></i>
+        <div class="card-title">School Students</div>
+        <div class="card-value">@Model.SchoolStudentCount</div>
+    </div>
+
+    <div class="glass-card">
+        <i class="bi bi-people"></i>
+        <div class="card-title">College Students</div>
+        <div class="card-value">@Model.CollegeStudentCount</div>
+    </div>
+
+    <div class="glass-card">
+        <i class="bi bi-cash-stack"></i>
+        <div class="card-title">Total Fees Collected</div>
+        <div class="card-value">$@Model.TotalFeesCollected</div>
+    </div>
+
+    <div class="glass-card">
+        <i class="bi bi-award"></i>
+        <div class="card-title">Scholarships</div>
+        <div class="card-value">@Model.ScholarshipsCount</div>
+    </div>
+
+    <!-- Extra empty card -->
+    <div class="glass-card">
+        <i class="bi bi-card-list"></i>
+        <div class="card-title">Coming Soon</div>
+        <div class="card-value">--</div>
+    </div>
+</div>

@@ -1,52 +1,166 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BloomStarSchoolAndCollegeSystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - BloomStar</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BloomStarSchoolAndCollegeSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+
+    <style>
+        /* ==== Buttons ==== */
+        .btn-classic {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(90deg,#06b6d4 0%, #3b82f6 100%);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 6px 16px rgba(6,182,212,0.25);
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-classic:hover {
+                transform: translateY(-2px);
+                background: linear-gradient(90deg,#0891b2 0%, #2563eb 100%);
+                box-shadow: 0 10px 22px rgba(6,182,212,0.35);
+            }
+
+        .btn-classic-outline {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(6,182,212,0.5);
+            color: #06b6d4;
+            font-weight: 600;
+            transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-classic-outline:hover {
+                background: #06b6d4;
+                color: #ffffff;
+                box-shadow: 0 8px 18px rgba(6,182,212,0.25);
+            }
+
+        /* ==== Card (glassy) ==== */
+        .glass-card {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">BloomStarSchoolAndCollegeSystem</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- ====== TOP NAVBAR (Dark Royal Blue) ====== -->
+    <nav class="bg-blue-900 text-white shadow-lg fixed w-full z-50 top-0 left-0">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center h-20">
+            <!-- Logo + School Name -->
+            <a asp-page="/Index" class="flex items-center space-x-3">
+                <img src="~/images/students/school-logo.png" alt="BloomStar logo"
+                     class="w-12 h-12 rounded-full border-2 border-blue-700 shadow-md object-cover" />
+                <div class="leading-tight">
+                    <div class="text-2xl font-bold tracking-wide text-white">Bloom Star School</div>
+                    <div class="text-sm text-blue-300">And College System</div>
                 </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center space-x-6">
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                        <button type="submit" class="ml-3 btn-classic">
+                            <i class="bi bi-box-arrow-right mr-1"></i> Logout
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn-classic">Login</a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="ml-2 btn-classic-outline">Sign Up</a>
+                }
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE LAYOUT ===== -->
+    <div class="pt-24 flex">
+        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+        {
+            <!-- Sidebar -->
+            <aside class="hidden md:block w-64 bg-blue-800 text-blue-100 min-h-screen fixed top-20 left-0 p-4">
+                <nav class="space-y-2">
+                    <a asp-page="/Admin/Index" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                    </a>
+                    <a asp-page="/Admin/Students" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-people-fill"></i><span>Students</span>
+                    </a>
+                    <a asp-page="/Admin/Teachers" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-person-badge"></i><span>Teachers</span>
+                    </a>
+                    <a asp-page="/Admin/Admissions" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-journal-text"></i><span>Admissions</span>
+                    </a>
+                    <a asp-page="/Admin/Finance" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-cash-coin"></i><span>Finance</span>
+                    </a>
+                    <a asp-page="/Admin/Reports" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+                        <i class="bi bi-bar-chart-line"></i><span>Reports</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main content -->
+            <main class="ml-0 md:ml-64 flex-1 p-6">
+                <div class="max-w-7xl mx-auto px-2">
+                    @RenderBody()
+                </div>
+            </main>
+        }
+        else
+        {
+            <!-- Main content without sidebar -->
+            <main class="flex-1 p-6 w-full">
+                <div class="max-w-7xl mx-auto px-2">
+                    @RenderBody()
+                </div>
+            </main>
+        }
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - BloomStarSchoolAndCollegeSystem - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
+    <footer class="mt-12 py-6 text-center text-sm text-gray-500">
+        &copy; @DateTime.Now.Year BloomStar School & College System
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        (() => {
+            const btn = document.getElementById('menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if (btn) btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        })();
+    </script>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
