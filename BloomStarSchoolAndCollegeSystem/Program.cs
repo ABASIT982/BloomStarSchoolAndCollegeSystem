@@ -1,4 +1,4 @@
-﻿using BloomStarSchoolAndCollegeSystem.Data;   // ✅ Add this
+using BloomStarSchoolAndCollegeSystem.Data;   // ✅ Add this
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
