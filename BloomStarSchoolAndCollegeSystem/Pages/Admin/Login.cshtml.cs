@@ -1,57 +1,72 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
-public class LoginModel : PageModel
+namespace BloomStarSchoolAndCollegeSystem.Pages.Admin
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
-
-    public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+    public class LoginModel : PageModel
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
-    }
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-    [BindProperty]
-    public InputModel Input { get; set; }
-
-    public string ReturnUrl { get; set; }
-
-    public class InputModel
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool RememberMe { get; set; }
-    }
-
-    public void OnGet(string returnUrl = null)
-    {
-        ReturnUrl = returnUrl ?? Url.Content("~/");
-    }
-
-    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-    {
-        returnUrl ??= Url.Content("~/");
-
-        if (!ModelState.IsValid)
-            return Page();
-
-        var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-
-        if (result.Succeeded)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
         {
-            var user = await _userManager.FindByEmailAsync(Input.Email);
-
-            // Admin redirect
-            if (await _userManager.IsInRoleAsync(user, "Admin"))
-                return LocalRedirect(Url.Content("~/Admin/Index"));
-
-            // Normal user redirect
-            return LocalRedirect(returnUrl);
+            _signInManager = signInManager;
+            _userManager = userManager;
+            Input = new InputModel();   // initialize Input
+            ReturnUrl = "/Admin/Index"; // default return URL
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-        return Page();
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public string ReturnUrl { get; set; }
+
+        public class InputModel
+        {
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; } = string.Empty;
+
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; } = string.Empty;
+
+            public bool RememberMe { get; set; }
+        }
+
+        public void OnGet(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl ?? Url.Content("~/Admin/Index");
+        }
+
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/Admin/Index");
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return LocalRedirect(returnUrl);
+                }
+
+                // Not admin
+                await _signInManager.SignOutAsync();
+                ModelState.AddModelError(string.Empty, "You are not authorized as Admin.");
+                return Page();
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return Page();
+        }
     }
 }

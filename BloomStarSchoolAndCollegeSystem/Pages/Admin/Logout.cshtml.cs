@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace BloomStarSchoolAndCollegeSystem.Pages.Admin
 {
@@ -16,7 +17,7 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Admin
         public async Task<IActionResult> OnPostAsync()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Admin/Login"); // go back to login
         }
     }
 }
