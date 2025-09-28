@@ -37,7 +37,7 @@
             <div class="flex items-center gap-2 md:gap-4 flex-wrap">
                 @if (User?.Identity?.IsAuthenticated != true)
                 {
-                    <a asp-area="Identity" asp-page="/Account/Login" class="btn-classic text-xs sm:text-sm px-3 py-1 whitespace-nowrap">Login</a>
+                    <a asp-page="/Admin/Login" class="btn-classic text-xs sm:text-sm px-3 py-1 whitespace-nowrap">Login</a>
                 }
 
                 @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
@@ -49,7 +49,8 @@
 
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
-                    <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="hidden md:block">
+                    <!-- ✅ FIXED: use Admin/Logout instead of Identity/Account/Logout -->
+                    <form method="post" asp-page="/Admin/Logout" class="hidden md:block">
                         <button type="submit" class="ml-3 btn-classic">
                             <i class="bi bi-box-arrow-right mr-1"></i> Logout
                         </button>
@@ -83,7 +84,8 @@
 
             @if (User?.Identity?.IsAuthenticated == true)
             {
-                <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="mt-4">
+                <!-- ✅ FIXED: use Admin/Logout instead of Identity/Account/Logout -->
+                <form method="post" asp-page="/Admin/Logout" class="mt-4">
                     <button type="submit" class="w-full btn-classic">
                         <i class="bi bi-box-arrow-right mr-1"></i> Logout
                     </button>
