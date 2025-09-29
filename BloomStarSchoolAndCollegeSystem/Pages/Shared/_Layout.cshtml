@@ -20,38 +20,30 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- ===== TOP NAVBAR ===== -->
+    <!-- ===== Top Navbar (royal blue) ===== -->
     <nav class="bg-blue-900 text-white shadow-lg fixed w-full z-50 top-0 left-0">
-        <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between h-20 gap-2 md:gap-4">
-            <!-- Logo + Name -->
-            <a asp-page="/Index" class="flex items-center flex-shrink-0 gap-2 sm:gap-3">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
+            <!-- Logo + School Name -->
+            <a asp-page="/Index" class="flex items-center gap-3">
                 <img src="~/images/students/school-logo.png" alt="BloomStar logo"
-                     class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-blue-700 object-cover" />
+                     class="w-12 h-12 rounded-full border-2 border-blue-700 object-cover" />
                 <div class="leading-tight">
-                    <div class="text-lg sm:text-xl font-bold text-white">Bloom Star School</div>
-                    <div class="text-xs sm:text-sm text-blue-300">And College System</div>
+                    <div class="text-xl font-bold text-white">Bloom Star School</div>
+                    <div class="text-sm text-blue-300">And College System</div>
                 </div>
             </a>
 
-            <!-- Auth buttons / Hamburger -->
-            <div class="flex items-center gap-2 md:gap-4 flex-wrap">
-                @if (User?.Identity?.IsAuthenticated != true)
+            <!-- Auth Buttons -->
+            <div class="flex items-center gap-4">
+                @if (!User.Identity?.IsAuthenticated ?? true)
                 {
-                    <a asp-page="/Admin/Login" class="btn-classic text-xs sm:text-sm px-3 py-1 whitespace-nowrap">Login</a>
+                    <a asp-page="/Admin/Login" class="btn-classic">Login</a>
+                    <a asp-page="/Admin/Register" class="btn-classic-outline">Sign Up</a>
                 }
-
-                @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                else
                 {
-                    <button id="menu-btn" class="md:hidden text-white text-2xl">
-                        <i class="bi bi-list"></i>
-                    </button>
-                }
-
-                @if (User?.Identity?.IsAuthenticated == true)
-                {
-                    <!-- ✅ FIXED: use Admin/Logout instead of Identity/Account/Logout -->
-                    <form method="post" asp-page="/Admin/Logout" class="hidden md:block">
-                        <button type="submit" class="ml-3 btn-classic">
+                    <form method="post" asp-page="/Admin/Logout">
+                        <button type="submit" class="btn-classic">
                             <i class="bi bi-box-arrow-right mr-1"></i> Logout
                         </button>
                     </form>
@@ -60,67 +52,11 @@
         </div>
     </nav>
 
-    <!-- MOBILE SIDEBAR -->
-    <aside id="mobile-menu" class="admin-sidebar md:hidden fixed top-20 left-0 w-64 h-full p-4 hidden z-50">
-        <nav class="space-y-2">
-            <a asp-page="/Admin/Index" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-speedometer2"></i><span>Dashboard</span>
-            </a>
-            <a asp-page="/Admin/Students" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-people-fill"></i><span>Students</span>
-            </a>
-            <a asp-page="/Admin/Teachers" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-person-badge"></i><span>Teachers</span>
-            </a>
-            <a asp-page="/Admin/Admissions" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-journal-text"></i><span>Admissions</span>
-            </a>
-            <a asp-page="/Admin/Finance" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-cash-coin"></i><span>Finance</span>
-            </a>
-            <a asp-page="/Admin/Reports" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                <i class="bi bi-bar-chart-line"></i><span>Reports</span>
-            </a>
-
-            @if (User?.Identity?.IsAuthenticated == true)
-            {
-                <!-- ✅ FIXED: use Admin/Logout instead of Identity/Account/Logout -->
-                <form method="post" asp-page="/Admin/Logout" class="mt-4">
-                    <button type="submit" class="w-full btn-classic">
-                        <i class="bi bi-box-arrow-right mr-1"></i> Logout
-                    </button>
-                </form>
-            }
-        </nav>
-    </aside>
-
-    <!-- PAGE LAYOUT -->
+    <!-- ===== Page Layout ===== -->
     <div class="pt-24 flex">
-        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
         {
-            <aside class="admin-sidebar hidden md:block w-64 min-h-screen fixed top-20 left-0 p-4">
-                <nav class="space-y-2">
-                    <a asp-page="/Admin/Index" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
-                    </a>
-                    <a asp-page="/Admin/Students" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-people-fill"></i><span>Students</span>
-                    </a>
-                    <a asp-page="/Admin/Teachers" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-person-badge"></i><span>Teachers</span>
-                    </a>
-                    <a asp-page="/Admin/Admissions" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-journal-text"></i><span>Admissions</span>
-                    </a>
-                    <a asp-page="/Admin/Finance" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-cash-coin"></i><span>Finance</span>
-                    </a>
-                    <a asp-page="/Admin/Reports" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10">
-                        <i class="bi bi-bar-chart-line"></i><span>Reports</span>
-                    </a>
-                </nav>
-            </aside>
-
+            <partial name="_AdminSidebar" />
             <main class="ml-0 md:ml-64 flex-1 p-6">
                 <div class="max-w-7xl mx-auto px-2">
                     @RenderBody()
@@ -140,14 +76,6 @@
     <footer class="mt-12 py-6 text-center text-sm text-gray-500">
         &copy; @DateTime.Now.Year BloomStar School & College System
     </footer>
-
-    <script>
-        (() => {
-            const btn = document.getElementById('menu-btn');
-            const menu = document.getElementById('mobile-menu');
-            if (btn) btn.addEventListener('click', () => menu.classList.toggle('hidden'));
-        })();
-    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

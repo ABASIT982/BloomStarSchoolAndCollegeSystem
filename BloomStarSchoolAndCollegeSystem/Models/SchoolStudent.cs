@@ -10,8 +10,13 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         [Required, StringLength(100)]
         public string Name { get; set; }
 
+        // ✅ Grade: Nursery, KG, Prep, 1 … 10
         [Required]
-        public string GradeName { get; set; } // Rose, Lily, Daffodil, Rose Model
+        public string GradeName { get; set; }
+
+        // ✅ Section: Rose Model, Rose, Lily, Daffodil
+        [Required]
+        public string SectionName { get; set; }
 
         [Required]
         public string ParentName { get; set; }
