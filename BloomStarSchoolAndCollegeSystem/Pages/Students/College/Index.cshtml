@@ -1,0 +1,85 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Students.College.IndexModel
+@{
+    ViewData["Title"] = "College Students";
+}
+
+<h1 class="text-2xl font-bold mb-6 text-blue-900">College Students</h1>
+
+<form method="get" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+
+    <!-- Search -->
+    <input type="text" name="Search" value="@Model.Search"
+           placeholder="Search by Id, Name or Phone"
+           class="border rounded p-2 w-full" />
+
+    <!-- Grade Filter -->
+    <select name="GradeName" class="border rounded p-2 w-full">
+        <option value="">All Grades</option>
+        @foreach (var g in Model.AllGrades)
+        {
+            <option value="@g" selected="@(Model.GradeName == g)">
+                @g
+            </option>
+        }
+    </select>
+
+    <!-- Department Filter -->
+    <select name="Department" class="border rounded p-2 w-full">
+        <option value="">All Departments</option>
+        @foreach (var d in Model.AllDepartments)
+        {
+            <option value="@d" selected="@(Model.Department == d)">
+                @d
+            </option>
+        }
+    </select>
+
+    <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">
+        Filter
+    </button>
+</form>
+
+<!-- Sort Buttons -->
+<div class="mb-4 flex gap-3">
+    <a asp-page="./Index" asp-route-SortOrder="name_desc"
+       class="px-3 py-1 border rounded hover:bg-gray-200">
+        Name ↓
+    </a>
+    <a asp-page="./Index" asp-route-SortOrder="grade_asc"
+       class="px-3 py-1 border rounded hover:bg-gray-200">
+        Grade ↑
+    </a>
+    <a asp-page="./Index" asp-route-SortOrder="grade_desc"
+       class="px-3 py-1 border rounded hover:bg-gray-200">
+        Grade ↓
+    </a>
+</div>
+
+<table class="min-w-full bg-white border border-gray-300">
+    <thead class="bg-blue-900 text-white">
+        <tr>
+            <th class="px-4 py-2 text-left">ID</th>
+            <th class="px-4 py-2 text-left">Name</th>
+            <th class="px-4 py-2 text-left">Grade</th>
+            <th class="px-4 py-2 text-left">Department</th>
+            <th class="px-4 py-2 text-left">Parent Name</th>
+            <th class="px-4 py-2 text-left">Parent Phone</th>
+            <th class="px-4 py-2 text-left">Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model.FilteredStudents)
+        {
+            <tr class="border-b hover:bg-gray-100">
+                <td class="px-4 py-2">@s.Id</td>
+                <td class="px-4 py-2">@s.Name</td>
+                <td class="px-4 py-2">@s.GradeName</td>
+                <td class="px-4 py-2">@s.Department</td>
+                <td class="px-4 py-2">@s.ParentName</td>
+                <td class="px-4 py-2">@s.ParentPhone</td>
+                <td class="px-4 py-2">@s.Address</td>
+            </tr>
+        }
+    </tbody>
+</table>
