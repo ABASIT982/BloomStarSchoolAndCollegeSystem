@@ -1,0 +1,134 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Students.ManageStudentsModel
+@{
+    ViewData["Title"] = "Manage Students";
+}
+
+<h1 class="text-2xl font-bold mb-4 text-blue-900">Manage Students</h1>
+
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+    <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded mb-4">
+        <strong>✔</strong> @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="mb-4 flex flex-wrap gap-3 items-center">
+    <label class="font-semibold">Student Type:</label>
+    <select id="studentType" class="border rounded px-3 py-2" onchange="onTypeChange()">
+        <option value="">-- Select --</option>
+        <option value="School">School</option>
+        <option value="College">College</option>
+    </select>
+
+    <button type="button" class="bg-green-600 text-white px-4 py-2 rounded shadow" onclick="showAddForm()">
+        ➕ Add Student
+    </button>
+</div>
+
+<!-- ================= STUDENT LIST ================= -->
+@if (Model.SchoolStudents.Any())
+{
+    <h2 class="text-xl font-semibold mt-6 mb-2 text-blue-800">School Students</h2>
+    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">Name</th>
+                <th class="p-2 border">Grade</th>
+                <th class="p-2 border">Section</th>
+                <th class="p-2 border">Parent</th>
+                <th class="p-2 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.SchoolStudents)
+            {
+                <tr>
+                    <td class="p-2 border">@student.Name</td>
+                    <td class="p-2 border">@student.GradeName</td>
+                    <td class="p-2 border">@student.SectionName</td>
+                    <td class="p-2 border">@student.ParentName</td>
+                    <td class="p-2 border text-center">
+                        <a asp-page="/Shared/UpdateStudent" asp-route-id="@student.Id"
+                           class="px-3 py-1 bg-blue-600 text-white rounded">Update</a>
+                        <a asp-page="/Shared/DeleteStudent" asp-route-id="@student.Id"
+                           class="px-3 py-1 bg-red-600 text-white rounded">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.CollegeStudents.Any())
+{
+    <h2 class="text-xl font-semibold mt-6 mb-2 text-blue-800">College Students</h2>
+    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="p-2 border">Name</th>
+                <th class="p-2 border">Year</th>
+                <th class="p-2 border">Department</th>
+                <th class="p-2 border">Parent</th>
+                <th class="p-2 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.CollegeStudents)
+            {
+                <tr>
+                    <td class="p-2 border">@student.Name</td>
+                    <td class="p-2 border">@student.GradeName</td>
+                    <td class="p-2 border">@student.Department</td>
+                    <td class="p-2 border">@student.ParentName</td>
+                    <td class="p-2 border text-center">
+                        <a asp-page="Pages/Shared/_UpdateStudentPartial" asp-route-id="@student.Id"
+                           class="px-3 py-1 bg-blue-600 text-white rounded">Update</a>
+                        <a asp-page="Pages/Shared/_DeleteStudentPartial" asp-route-id="@student.Id"
+                           class="px-3 py-1 bg-red-600 text-white rounded">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- Your existing Add/Edit form section -->
+<div id="formContainer" style="display:none;" class="bg-white border rounded shadow p-4 mb-6">
+    <!-- keep your school/college forms here -->
+</div>
+
+@section Scripts {
+    <script>
+        function onTypeChange() {
+            const type = document.getElementById('studentType').value;
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('schoolForm')?.style.display = 'none';
+            document.getElementById('collegeForm')?.style.display = 'none';
+
+            if (type === 'School') {
+                document.getElementById('formContainer').style.display = 'block';
+                document.getElementById('schoolForm').style.display = 'block';
+            } else if (type === 'College') {
+                document.getElementById('formContainer').style.display = 'block';
+                document.getElementById('collegeForm').style.display = 'block';
+            }
+        }
+
+        function showAddForm() {
+            const type = document.getElementById('studentType').value;
+            if (!type) {
+                alert('Please select School or College first.');
+                return;
+            }
+            onTypeChange();
+            setTimeout(() => document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' }), 100);
+        }
+
+        function hideForm() {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('schoolForm')?.style.display = 'none';
+            document.getElementById('collegeForm')?.style.display = 'none';
+        }
+    </script>
+}

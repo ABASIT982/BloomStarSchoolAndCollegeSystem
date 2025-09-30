@@ -1,0 +1,81 @@
+﻿@model BloomStarSchoolAndCollegeSystem.Models.StudentViewModel
+
+<div class="p-6 bg-white shadow-lg rounded-xl">
+    <h2 class="text-xl font-bold mb-4 text-blue-700">Update Student</h2>
+
+    <form method="post" asp-page-handler="UpdateStudent">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Name -->
+        <div class="mb-4">
+            <label asp-for="Name" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Name" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="Name" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Grade -->
+        <div class="mb-4">
+            <label asp-for="GradeName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="GradeName" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="GradeName" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Section (School only) -->
+        <div class="mb-4">
+            <label asp-for="SectionName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="SectionName" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="SectionName" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Department (College only) -->
+        <div class="mb-4">
+            <label asp-for="Department" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Department" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="Department" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Parent Name -->
+        <div class="mb-4">
+            <label asp-for="ParentName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ParentName" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="ParentName" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Parent Phone -->
+        <div class="mb-4">
+            <label asp-for="ParentPhone" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ParentPhone" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="ParentPhone" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+            <label asp-for="Email" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Email" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="Email" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Address -->
+        <div class="mb-4">
+            <label asp-for="Address" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Address" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <span asp-validation-for="Address" class="text-red-500 text-sm"></span>
+        </div>
+
+        <!-- Active -->
+        <div class="mb-4 flex items-center">
+            <input asp-for="IsActive" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+            <label asp-for="IsActive" class="ml-2 text-sm text-gray-700"></label>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex justify-end space-x-4">
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                Update
+            </button>
+            <a asp-page="/Students/ManageStudents" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>

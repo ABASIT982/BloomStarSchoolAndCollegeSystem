@@ -1,0 +1,131 @@
+﻿@model BloomStarSchoolAndCollegeSystem.Models.StudentViewModel
+
+<div class="p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
+    <h2 class="text-xl font-semibold text-blue-700 mb-4">Add Student</h2>
+
+    <form method="post" asp-page-handler="AddStudent" enctype="multipart/form-data" class="space-y-4">
+        <!-- Student Type -->
+        <div>
+            <label class="block text-sm font-medium">Student Type</label>
+            <select asp-for="StudentType" class="w-full p-2 border rounded">
+                <option value="">-- Select --</option>
+                <option value="School">School</option>
+                <option value="College">College</option>
+            </select>
+            <span asp-validation-for="StudentType" class="text-red-600"></span>
+        </div>
+
+        <!-- School fields -->
+        <div id="schoolFields" style="display:none;">
+            <div>
+                <label class="block text-sm font-medium">Grade</label>
+                <select asp-for="GradeName" class="w-full p-2 border rounded">
+                    <option value="">-- Select Grade --</option>
+                    <option>Nursery</option>
+                    <option>KG</option>
+                    <option>Prep</option>
+                    <option>1st</option>
+                    <option>2nd</option>
+                    <option>3rd</option>
+                    <option>4th</option>
+                    <option>5th</option>
+                    <option>6th</option>
+                    <option>7th</option>
+                    <option>8th</option>
+                    <option>9th</option>
+                    <option>10th</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Section</label>
+                <select asp-for="SectionName" class="w-full p-2 border rounded">
+                    <option value="">-- Select Section --</option>
+                    <option>Rose Model</option>
+                    <option>Rose</option>
+                    <option>Lily</option>
+                    <option>Daffodil</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- College fields -->
+        <div id="collegeFields" style="display:none;">
+            <div>
+                <label class="block text-sm font-medium">Year</label>
+                <select asp-for="GradeName" class="w-full p-2 border rounded">
+                    <option value="">-- Select Year --</option>
+                    <option>1st Year</option>
+                    <option>2nd Year</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Department</label>
+                <select asp-for="Department" class="w-full p-2 border rounded">
+                    <option value="">-- Select Department --</option>
+                    <option>Pre-Medical</option>
+                    <option>Pre-Engineering</option>
+                    <option>Computer Science</option>
+                    <option>Commerce</option>
+                    <option>Humanity</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Common fields -->
+        <div>
+            <label class="block text-sm font-medium">Full Name</label>
+            <input asp-for="Name" class="w-full p-2 border rounded" />
+            <span asp-validation-for="Name" class="text-red-600"></span>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Parent Name</label>
+            <input asp-for="ParentName" class="w-full p-2 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Parent Phone</label>
+            <input asp-for="ParentPhone" class="w-full p-2 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Email (College only)</label>
+            <input asp-for="Email" class="w-full p-2 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Address</label>
+            <input asp-for="Address" class="w-full p-2 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Photo (optional)</label>
+            <input asp-for="Photo" type="file" class="w-full p-2 border rounded" />
+        </div>
+
+        <div class="flex gap-3 mt-3">
+            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Add Student</button>
+            <button type="reset" class="px-4 py-2 bg-gray-300 rounded">Clear</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Toggle school/college fields client-side
+        function toggleFields() {
+            var type = document.querySelector('[name="StudentType"]').value;
+            document.getElementById('schoolFields').style.display = type === 'School' ? 'block' : 'none';
+            document.getElementById('collegeFields').style.display = type === 'College' ? 'block' : 'none';
+        }
+        // bind
+        document.addEventListener('change', function (e) {
+            if (e.target && e.target.name === 'StudentType') toggleFields();
+        });
+
+        // run on load in case model returned with validation errors
+        document.addEventListener('DOMContentLoaded', toggleFields);
+    </script>
+}
