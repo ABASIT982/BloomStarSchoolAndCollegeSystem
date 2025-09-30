@@ -86,7 +86,7 @@ namespace BloomStarSchoolAndCollegeSystem.Data
             // Decimal precision fix (removes warnings)
             // ---------------------
             builder.Entity<Fee>()
-                   .Property(f => f.Amount)
+                   .Property(f => f.TotalFee)
                    .HasColumnType("decimal(18,2)");
 
             builder.Entity<Payment>()

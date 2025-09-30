@@ -1,0 +1,84 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Students.FeeDetailsModel
+@{
+    ViewData["Title"] = "Fee Details";
+}
+
+<h1 class="text-2xl font-bold mb-6 text-blue-900">Student Fee Details</h1>
+
+<form method="get" class="mb-6 flex flex-wrap items-center gap-3">
+    <!-- Search input -->
+    <input type="text" name="SearchTerm" value="@Model.SearchTerm" placeholder="Search by Name or Reg No"
+           class="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+    <!-- Section dropdown -->
+    <select name="SelectedSection"
+            class="border rounded px-3 py-2 w-full sm:w-40 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">All Sections</option>
+        <option value="School" selected="@(Model.SelectedSection == "School" ? "selected" : null)">School</option>
+        <option value="College" selected="@(Model.SelectedSection == "College" ? "selected" : null)">College</option>
+    </select>
+
+    <!-- Search button -->
+    <button type="submit"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow">
+        Search
+    </button>
+
+    <!-- Add Fee button -->
+    <a href="/Students/FeeDetails/Add"
+       class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded shadow">
+        Add Fee
+    </a>
+</form>
+
+
+<table class="min-w-full bg-white shadow rounded-lg">
+    <thead class="bg-blue-900 text-white">
+        <tr>
+            <th class="p-2">Reg No</th>
+            <th class="p-2">Name</th>
+            <th class="p-2">Section</th>
+            <th class="p-2">Class/Year</th>
+            <th class="p-2">Total Fee</th>
+            <th class="p-2">Paid Amount</th>
+            <th class="p-2">Due Amount</th>
+            <th class="p-2">Status</th>
+            <th class="p-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var fee in Model.FeeRecords)
+        {
+            <tr class="border-b hover:bg-gray-100">
+                <td class="p-2">@fee.RegNo</td>
+                <td class="p-2">@fee.Name</td>
+                <td class="p-2">@fee.Section</td>
+                <td class="p-2">@fee.ClassYear</td>
+                <td class="p-2">@fee.TotalFee</td>
+                <td class="p-2">@fee.PaidAmount</td>
+                <td class="p-2">@fee.DueAmount</td>
+                <td class="p-2">
+                    @if (fee.DueAmount == 0)
+                    {
+                        <span class="text-green-600 font-bold">Paid</span>
+                    }
+                    else if (fee.PaidAmount > 0)
+                    {
+                        <span class="text-yellow-600 font-bold">Partial</span>
+                    }
+                    else
+                    {
+                        <span class="text-red-600 font-bold">Unpaid</span>
+                    }
+                </td>
+                <td class="p-2 flex gap-2 flex-wrap">
+                    <a href="/Students/FeeDetails/View/@fee.Id" class="btn-classic bg-blue-500 text-white">View</a>
+                    <a href="/Students/FeeDetails/Edit/@fee.Id" class="btn-classic bg-yellow-500 text-white">Edit</a>
+                    <a href="/Students/FeeDetails/Delete/@fee.Id" class="btn-classic bg-red-500 text-white">Delete</a>
+                    <a href="/Students/FeeDetails/AddPayment/@fee.Id" class="btn-classic bg-green-500 text-white">Add Payment</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,21 +1,36 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BloomStarSchoolAndCollegeSystem.Models
 {
+    public enum StudentSection
+    {
+        School,
+        College
+    }
+
     public class Fee
     {
+        [Key]
         public int Id { get; set; }
 
-        [Required, StringLength(100)]
-        public string Title { get; set; } // e.g. Monthly Fee, Admission Fee
+        [Required]
+        public string RegNo { get; set; } = string.Empty;
 
         [Required]
-        public decimal Amount { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
-        public DateTime DueDate { get; set; }
+        public string ClassYear { get; set; } = string.Empty;
 
-        // You may later add StudentType + StudentId if you want to link to either School or College
+        [Required]
+        public StudentSection Section { get; set; } = StudentSection.School;
+
+        [Required]
+        public decimal TotalFee { get; set; }
+
+        [Required]
+        public decimal PaidAmount { get; set; }
+
+        public decimal DueAmount => TotalFee - PaidAmount;
     }
 }
