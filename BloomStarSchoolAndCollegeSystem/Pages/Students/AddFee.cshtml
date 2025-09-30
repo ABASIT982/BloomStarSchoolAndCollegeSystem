@@ -1,0 +1,194 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Students.AddFeeModel
+@{
+    ViewData["Title"] = "Add Fee";
+}
+
+<h1 class="text-2xl font-bold mb-6 text-blue-900">Add Student Fee</h1>
+
+<form method="post" class="space-y-4 bg-white p-6 rounded shadow">
+
+    <!-- Success message -->
+    <div id="successMsg" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4 mt-2"></div>
+
+    <!-- Section & Class/Grade & Department Selection -->
+    <div class="flex flex-col md:flex-row gap-4 items-center">
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Select Section</label>
+            <select id="sectionDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Section --</option>
+                <option value="School">School</option>
+                <option value="College">College</option>
+            </select>
+        </div>
+
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Class / Year</label>
+            <select id="classDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Class / Year --</option>
+            </select>
+        </div>
+
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Section / Department</label>
+            <select id="sectionDeptDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Section / Department --</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Search Student -->
+    <div class="flex gap-2 mt-2">
+        <input type="text" id="studentSearch" placeholder="Search by Name or Reg No"
+               class="input-class flex-1 p-2 border rounded" />
+        <button type="button" id="searchButton" class="btn-classic bg-blue-500 text-white px-4 py-2 rounded">
+            Search
+        </button>
+    </div>
+
+    <!-- Student List Table -->
+    <div class="overflow-x-auto mt-4">
+        <table class="min-w-full bg-white shadow rounded-lg border border-gray-200">
+            <thead class="bg-blue-900 text-white">
+                <tr>
+                    <th class="p-2 border-r border-gray-300">Reg No</th>
+                    <th class="p-2 border-r border-gray-300">Name</th>
+                    <th class="p-2 border-r border-gray-300">Section</th>
+                    <th class="p-2 border-r border-gray-300">Class/Year</th>
+                    <th class="p-2 border-r border-gray-300">Total Fee</th>
+                    <th class="p-2 border-r border-gray-300">Paid Amount</th>
+                    <th class="p-2 border-r border-gray-300">Due Amount</th>
+                    <th class="p-2">Select</th>
+                </tr>
+            </thead>
+            <tbody id="studentList">
+                <!-- Dynamically filled -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Fee Details -->
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label>Student Name</label>
+            <input type="text" id="studentName" readonly class="input-class w-full p-2 border rounded" />
+        </div>
+        <div>
+            <label>Reg No</label>
+            <input type="text" id="studentRegNo" readonly class="input-class w-full p-2 border rounded" />
+        </div>
+        <div>
+            <label>Total Fee</label>
+            <input type="number" id="totalFee" readonly class="input-class w-full p-2 border rounded" />
+        </div>
+        <div>
+            <label>Paid Amount</label>
+            <input type="number" asp-for="PaidAmount" class="input-class w-full p-2 border rounded" />
+        </div>
+        <div>
+            <label>Due Amount</label>
+            <input type="number" id="dueAmount" readonly class="input-class w-full p-2 border rounded" />
+        </div>
+    </div>
+
+    <button type="button" id="payFeeButton" class="btn-classic bg-green-600 text-white mt-4 px-6 py-2 rounded shadow hover:bg-green-700 transition-colors">
+        Pay Fee
+    </button>
+</form>
+
+@section Scripts {
+    <script>
+        const sectionDropdown = document.getElementById('sectionDropdown');
+        const classDropdown = document.getElementById('classDropdown');
+        const sectionDeptDropdown = document.getElementById('sectionDeptDropdown');
+        const studentListTbody = document.getElementById('studentList');
+        const studentSearch = document.getElementById('studentSearch');
+        const searchButton = document.getElementById('searchButton');
+        const payFeeButton = document.getElementById('payFeeButton');
+        const successMsg = document.getElementById('successMsg');
+
+        const schoolClasses = ["Nursery","KG", "Prep", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"];
+        const schoolSections = ["Rose Model","Rose", "Lily", "Daffodil"];
+        const collegeClasses = ["1st Year", "2nd Year"];
+        const collegeDepartments = ["Pre-Medical", "Pre-Engineering", "Computer Science", "Commerce", "Humanity"];
+
+        let studentsData = [
+            { Name: "Ali Khan", RegNo: "SCH001", Section: "Rose", ClassYear: "1st", TotalFee: 5000, PaidAmount: 2000 },
+            { Name: "Sara Ahmed", RegNo: "COL001", Section: "Pre-Medical", ClassYear: "1st Year", TotalFee: 7000, PaidAmount: 0 }
+        ];
+
+        // Populate Class dropdown based on section
+        sectionDropdown.addEventListener('change', () => {
+            classDropdown.innerHTML = '<option value="">-- Select Class / Year --</option>';
+            sectionDeptDropdown.innerHTML = '<option value="">-- Select Section / Department --</option>';
+            studentListTbody.innerHTML = '';
+
+            if (sectionDropdown.value === "School") {
+                schoolClasses.forEach(c => classDropdown.innerHTML += `<option value="${c}">${c}</option>`);
+                schoolSections.forEach(s => sectionDeptDropdown.innerHTML += `<option value="${s}">${s}</option>`);
+            } else if (sectionDropdown.value === "College") {
+                collegeClasses.forEach(c => classDropdown.innerHTML += `<option value="${c}">${c}</option>`);
+                collegeDepartments.forEach(d => sectionDeptDropdown.innerHTML += `<option value="${d}">${d}</option>`);
+            }
+        });
+
+        // Render filtered students
+        function renderStudents(filtered) {
+            studentListTbody.innerHTML = '';
+            filtered.forEach((stu, index) => {
+                const tr = document.createElement('tr');
+                // alternating row colors
+                tr.style.backgroundColor = index % 2 === 0 ? '#f9fafb' : '#ffffff';
+                tr.classList.add('border-b', 'hover:bg-gray-200', 'transition', 'duration-200');
+                tr.innerHTML = `
+                    <td class="p-2 border-r border-gray-300">${stu.RegNo}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.Name}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.Section}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.ClassYear}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.TotalFee}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.PaidAmount}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.TotalFee - stu.PaidAmount}</td>
+                    <td class="p-2 text-center">
+                        <div class="w-5 h-5 border-2 border-gray-400 rounded-full cursor-pointer flex items-center justify-center select-student-circle" onclick='selectStudent(${JSON.stringify(stu)})'>
+                            <div class="bg-green-500 w-3 h-3 rounded-full hidden"></div>
+                        </div>
+                    </td>`;
+                studentListTbody.appendChild(tr);
+            });
+        }
+
+        // Search button click
+        searchButton.addEventListener('click', () => {
+            const selectedClass = classDropdown.value;
+            const selectedSection = sectionDeptDropdown.value;
+            const term = studentSearch.value.toLowerCase();
+
+            const filtered = studentsData.filter(s =>
+                (!selectedClass || s.ClassYear === selectedClass) &&
+                (!selectedSection || s.Section === selectedSection) &&
+                (!term || s.Name.toLowerCase().includes(term) || s.RegNo.toLowerCase().includes(term))
+            );
+
+            renderStudents(filtered);
+        });
+
+        function selectStudent(student) {
+            document.getElementById('studentName').value = student.Name;
+            document.getElementById('studentRegNo').value = student.RegNo;
+            document.getElementById('totalFee').value = student.TotalFee;
+            document.getElementById('dueAmount').value = student.TotalFee - student.PaidAmount;
+
+            // toggle green circle
+            document.querySelectorAll('.select-student-circle div').forEach(d => d.classList.add('hidden'));
+            event.currentTarget.querySelector('div').classList.remove('hidden');
+        }
+
+        // Pay Fee button click
+        payFeeButton.addEventListener('click', () => {
+            // Here you will submit the form to the server in real implementation
+            successMsg.textContent = 'Fee paid successfully!';
+            successMsg.classList.remove('hidden');
+            setTimeout(() => successMsg.classList.add('hidden'), 3000);
+        });
+    </script>
+}

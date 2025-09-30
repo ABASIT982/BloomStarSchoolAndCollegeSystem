@@ -31,6 +31,6 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         [Required]
         public decimal PaidAmount { get; set; }
 
-        public decimal DueAmount => TotalFee - PaidAmount;
+        public decimal DueAmount { get; set; }
     }
 }
