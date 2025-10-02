@@ -35,3 +35,5 @@ Bug Fixes
 Fixed navigation issues between Admin and Students sections
 
 Fixed missing layout reference and @click error
+Pages Updates
+add pages for add student delete studetn adn update studnet for school or college 
