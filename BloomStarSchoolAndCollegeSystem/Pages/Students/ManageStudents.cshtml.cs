@@ -16,106 +16,88 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Students
         public ManageStudentsModel(ApplicationDbContext context)
         {
             _context = context;
-            SchoolStudent = new SchoolStudent();
-            CollegeStudent = new CollegeStudent();
         }
 
-        // ✅ Lists for displaying all students
-        public List<SchoolStudent> SchoolStudents { get; set; } = new();
-        public List<CollegeStudent> CollegeStudents { get; set; } = new();
-
-        // ✅ Single student objects for Add/Edit forms
-        [BindProperty]
-        public SchoolStudent SchoolStudent { get; set; }
+        public IList<SchoolStudent> SchoolStudents { get; set; }
+        public IList<CollegeStudent> CollegeStudents { get; set; }
 
         [BindProperty]
-        public CollegeStudent CollegeStudent { get; set; }
+        public SchoolStudent SchoolStu { get; set; }
 
-        [TempData]
-        public string? SuccessMessage { get; set; }
+        [BindProperty]
+        public CollegeStudent CollegeStu { get; set; }
 
-        // ✅ Load data into lists
-        public async Task OnGetAsync(int? schoolId, int? collegeId)
+        [BindProperty]
+        public string SearchTerm { get; set; }
+
+        public async Task OnGetAsync()
         {
-            // Load all students for display
             SchoolStudents = await _context.SchoolStudents.ToListAsync();
             CollegeStudents = await _context.CollegeStudents.ToListAsync();
-
-            // If editing
-            if (schoolId.HasValue)
-            {
-                var s = await _context.SchoolStudents.FindAsync(schoolId.Value);
-                if (s != null) SchoolStudent = s;
-            }
-
-            if (collegeId.HasValue)
-            {
-                var c = await _context.CollegeStudents.FindAsync(collegeId.Value);
-                if (c != null) CollegeStudent = c;
-            }
         }
 
-        // ---------------------------
-        // Add
-        // ---------------------------
+        // ------------------ SCHOOL --------------------
         public async Task<IActionResult> OnPostAddSchoolAsync()
         {
-            _context.SchoolStudents.Add(SchoolStudent);
+            if (!ModelState.IsValid) return Page();
+
+            _context.SchoolStudents.Add(SchoolStu);
             await _context.SaveChangesAsync();
-            SuccessMessage = "School student added.";
+            TempData["Success"] = "School student added successfully!";
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostAddCollegeAsync()
+        public async Task<IActionResult> OnPostUpdateSchoolAsync()
         {
-            _context.CollegeStudents.Add(CollegeStudent);
+            if (!ModelState.IsValid) return Page();
+
+            _context.Attach(SchoolStu).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            SuccessMessage = "College student added.";
+            TempData["Success"] = "School student updated successfully!";
             return RedirectToPage();
         }
 
-        // ---------------------------
-        // Update
-        // ---------------------------
-        public async Task<IActionResult> OnPostEditSchoolAsync()
-        {
-            _context.Attach(SchoolStudent).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            SuccessMessage = "School student updated.";
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostEditCollegeAsync()
-        {
-            _context.Attach(CollegeStudent).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            SuccessMessage = "College student updated.";
-            return RedirectToPage();
-        }
-
-        // ---------------------------
-        // Delete
-        // ---------------------------
         public async Task<IActionResult> OnPostDeleteSchoolAsync(int id)
         {
-            var student = await _context.SchoolStudents.FindAsync(id);
-            if (student != null)
+            var stu = await _context.SchoolStudents.FindAsync(id);
+            if (stu != null)
             {
-                _context.SchoolStudents.Remove(student);
+                _context.SchoolStudents.Remove(stu);
                 await _context.SaveChangesAsync();
-                SuccessMessage = "School student deleted.";
+                TempData["Success"] = "School student deleted successfully!";
             }
+            return RedirectToPage();
+        }
+
+        // ------------------ COLLEGE --------------------
+        public async Task<IActionResult> OnPostAddCollegeAsync()
+        {
+            if (!ModelState.IsValid) return Page();
+
+            _context.CollegeStudents.Add(CollegeStu);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "College student added successfully!";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostUpdateCollegeAsync()
+        {
+            if (!ModelState.IsValid) return Page();
+
+            _context.Attach(CollegeStu).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "College student updated successfully!";
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostDeleteCollegeAsync(int id)
         {
-            var student = await _context.CollegeStudents.FindAsync(id);
-            if (student != null)
+            var stu = await _context.CollegeStudents.FindAsync(id);
+            if (stu != null)
             {
-                _context.CollegeStudents.Remove(student);
+                _context.CollegeStudents.Remove(stu);
                 await _context.SaveChangesAsync();
-                SuccessMessage = "College student deleted.";
+                TempData["Success"] = "College student deleted successfully!";
             }
             return RedirectToPage();
         }

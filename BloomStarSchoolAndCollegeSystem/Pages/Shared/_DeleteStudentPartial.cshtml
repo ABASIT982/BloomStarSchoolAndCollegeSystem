@@ -1,23 +1,6 @@
 ﻿@model BloomStarSchoolAndCollegeSystem.Models.StudentViewModel
 
-<div class="p-6 bg-white rounded-2xl shadow-lg max-w-md mx-auto text-center">
-    <h2 class="text-2xl font-bold text-red-600 mb-4">
-        <i class="fas fa-trash-alt mr-2"></i> Delete Student
-    </h2>
-
-    <p class="mb-4 text-gray-700">
-        Are you sure you want to delete <b>@Model.Name</b>?
-    </p>
-
-    <form method="post" asp-page-handler="DeleteStudent">
-        <input type="hidden" asp-for="Id" />
-        <div class="flex justify-center space-x-4">
-            <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                <i class="fas fa-trash mr-2"></i> Delete
-            </button>
-            <a asp-page="/Students/ManageStudents" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-                Cancel
-            </a>
-        </div>
-    </form>
-</div>
+<form method="post" asp-page-handler="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+</form>

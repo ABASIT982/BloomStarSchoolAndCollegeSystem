@@ -6,21 +6,19 @@ namespace BloomStarSchoolAndCollegeSystem.Models
     {
         public int Id { get; set; }
 
-        // School or College
-        [Required]
-        public string StudentType { get; set; } = string.Empty; // "School" or "College"
-
         [Required, StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string GradeName { get; set; } = string.Empty;
+        public string StudentType { get; set; } = string.Empty; // "School" or "College"
 
-        // For School Students
-        public string? SectionName { get; set; }
+        // School only
+        public string? GradeName { get; set; } // Nursery … 10
+        public string? SectionName { get; set; } // Rose, Lily, etc.
 
-        // For College Students
-        public string? Department { get; set; }
+        // College only
+        public string? Department { get; set; } // Bio, CS, Commerce
+        public string? Year { get; set; } // First Year, Second Year
 
         [Required]
         public string ParentName { get; set; } = string.Empty;
@@ -29,23 +27,12 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         public string ParentPhone { get; set; } = string.Empty;
 
         [EmailAddress]
-        public string? Email { get; set; }   // Nullable for school students
+        public string? Email { get; set; } // Only college
 
-        [StringLength(200)]
-        public string Address { get; set; } = string.Empty;
+        public string? Address { get; set; }
 
         public bool IsActive { get; set; } = true;
 
-        // ✅ Student Photo
-        public string? PhotoPath { get; set; }
-
-        // ✅ For file upload binding
-        public IFormFile? Photo { get; set; }
-
-        // ✅ Scholarship (nullable)
-        public int? ScholarshipId { get; set; }
-
-        // ✅ Success Message (nullable)
-        public string? SuccessMessage { get; set; }
+        public string? SearchTerm { get; set; }
     }
 }

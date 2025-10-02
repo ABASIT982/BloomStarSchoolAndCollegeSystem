@@ -4,131 +4,320 @@
     ViewData["Title"] = "Manage Students";
 }
 
-<h1 class="text-2xl font-bold mb-4 text-blue-900">Manage Students</h1>
+<h1 class="text-2xl font-bold mb-6 text-blue-900">Manage Students</h1>
 
-@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
-{
-    <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded mb-4">
-        <strong>✔</strong> @TempData["SuccessMessage"]
+<form method="post" class="space-y-4 bg-white p-6 rounded shadow">
+
+    <!-- Section & Class/Year & Department Selection -->
+    <div class="flex flex-col md:flex-row gap-4 items-center">
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Select Section</label>
+            <select id="sectionDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Section --</option>
+                <option value="School">School</option>
+                <option value="College">College</option>
+            </select>
+        </div>
+
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Class / Year</label>
+            <select id="classDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Class / Year --</option>
+            </select>
+        </div>
+
+        <div class="flex-1">
+            <label class="block font-semibold mb-1">Section / Department</label>
+            <select id="sectionDeptDropdown" class="input-class w-full p-2 border rounded">
+                <option value="">-- Select Section / Department --</option>
+            </select>
+        </div>
     </div>
-}
 
-<div class="mb-4 flex flex-wrap gap-3 items-center">
-    <label class="font-semibold">Student Type:</label>
-    <select id="studentType" class="border rounded px-3 py-2" onchange="onTypeChange()">
-        <option value="">-- Select --</option>
-        <option value="School">School</option>
-        <option value="College">College</option>
-    </select>
+    <!-- Search Student -->
+    <div class="flex gap-2 mt-2">
+        <input type="text" id="studentSearch" placeholder="Search by Name or Reg No"
+               class="input-class flex-1 p-2 border rounded" />
+        <button type="button" id="searchButton" class="btn-classic bg-blue-500 text-white px-4 py-2 rounded">
+            Search
+        </button>
+    </div>
 
-    <button type="button" class="bg-green-600 text-white px-4 py-2 rounded shadow" onclick="showAddForm()">
-        ➕ Add Student
-    </button>
-</div>
-
-<!-- ================= STUDENT LIST ================= -->
-@if (Model.SchoolStudents.Any())
-{
-    <h2 class="text-xl font-semibold mt-6 mb-2 text-blue-800">School Students</h2>
-    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Grade</th>
-                <th class="p-2 border">Section</th>
-                <th class="p-2 border">Parent</th>
-                <th class="p-2 border">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var student in Model.SchoolStudents)
-            {
+    <!-- Student List Table -->
+    <div class="overflow-x-auto mt-4">
+        <table class="min-w-full bg-white shadow rounded-lg border border-gray-200">
+            <thead class="bg-blue-900 text-white">
                 <tr>
-                    <td class="p-2 border">@student.Name</td>
-                    <td class="p-2 border">@student.GradeName</td>
-                    <td class="p-2 border">@student.SectionName</td>
-                    <td class="p-2 border">@student.ParentName</td>
-                    <td class="p-2 border text-center">
-                        <a asp-page="/Shared/UpdateStudent" asp-route-id="@student.Id"
-                           class="px-3 py-1 bg-blue-600 text-white rounded">Update</a>
-                        <a asp-page="/Shared/DeleteStudent" asp-route-id="@student.Id"
-                           class="px-3 py-1 bg-red-600 text-white rounded">Delete</a>
-                    </td>
+                    <th class="p-2 border-r border-gray-300">Reg No</th>
+                    <th class="p-2 border-r border-gray-300">Name</th>
+                    <th class="p-2 border-r border-gray-300">Section</th>
+                    <th class="p-2 border-r border-gray-300">Class/Year</th>
+                    <th class="p-2 border-r border-gray-300">Parent</th>
+                    <th class="p-2">Select</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody id="studentList">
+                <!-- Dynamically filled -->
+            </tbody>
+        </table>
+    </div>
 
-@if (Model.CollegeStudents.Any())
-{
-    <h2 class="text-xl font-semibold mt-6 mb-2 text-blue-800">College Students</h2>
-    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Year</th>
-                <th class="p-2 border">Department</th>
-                <th class="p-2 border">Parent</th>
-                <th class="p-2 border">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var student in Model.CollegeStudents)
-            {
-                <tr>
-                    <td class="p-2 border">@student.Name</td>
-                    <td class="p-2 border">@student.GradeName</td>
-                    <td class="p-2 border">@student.Department</td>
-                    <td class="p-2 border">@student.ParentName</td>
-                    <td class="p-2 border text-center">
-                        <a asp-page="Pages/Shared/_UpdateStudentPartial" asp-route-id="@student.Id"
-                           class="px-3 py-1 bg-blue-600 text-white rounded">Update</a>
-                        <a asp-page="Pages/Shared/_DeleteStudentPartial" asp-route-id="@student.Id"
-                           class="px-3 py-1 bg-red-600 text-white rounded">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <!-- Action Buttons -->
+    <div id="studentActions" class="hidden mt-4 flex gap-4">
+        <button type="button" id="updateStudentBtn" class="bg-yellow-500 text-white px-4 py-2 rounded shadow hover:bg-yellow-600">
+            Update Student
+        </button>
+        <button type="button" id="deleteStudentBtn" class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700">
+            Delete Student
+        </button>
+    </div>
 
-<!-- Your existing Add/Edit form section -->
-<div id="formContainer" style="display:none;" class="bg-white border rounded shadow p-4 mb-6">
-    <!-- keep your school/college forms here -->
-</div>
+    <!-- Add Student Button -->
+    <div class="mt-6">
+        <button type="button" id="addStudentBtn" class="bg-green-600 text-white px-6 py-2 rounded shadow hover:bg-green-700">
+            Add Student
+        </button>
+    </div>
+
+    <!-- Add Student Form -->
+    <div id="addForm" class="hidden mt-6 bg-gray-100 p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-4">Add New Student</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label>Name</label>
+                <input type="text" id="addName" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Reg No</label>
+                <input type="text" id="addRegNo" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Class/Year</label>
+                <input type="text" id="addClassYear" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Section / Department</label>
+                <input type="text" id="addSection" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Parent Name</label>
+                <input type="text" id="addParent" class="w-full border p-2 rounded" />
+            </div>
+        </div>
+        <button type="button" id="saveAddBtn" class="mt-4 bg-green-600 text-white px-6 py-2 rounded shadow hover:bg-green-700">
+            Save Student
+        </button>
+    </div>
+
+    <!-- Update Student Form -->
+    <div id="updateForm" class="hidden mt-6 bg-gray-100 p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-4">Update Student</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label>Name</label>
+                <input type="text" id="updName" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Reg No</label>
+                <input type="text" id="updRegNo" class="w-full border p-2 rounded" readonly />
+            </div>
+            <div>
+                <label>Class/Year</label>
+                <input type="text" id="updClassYear" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Section / Department</label>
+                <input type="text" id="updSection" class="w-full border p-2 rounded" />
+            </div>
+            <div>
+                <label>Parent Name</label>
+                <input type="text" id="updParent" class="w-full border p-2 rounded" />
+            </div>
+        </div>
+        <button type="button" id="saveUpdateBtn" class="mt-4 bg-green-600 text-white px-6 py-2 rounded shadow hover:bg-green-700">
+            Save Update
+        </button>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMsg" class="hidden mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded"></div>
+</form>
 
 @section Scripts {
     <script>
-        function onTypeChange() {
-            const type = document.getElementById('studentType').value;
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('schoolForm')?.style.display = 'none';
-            document.getElementById('collegeForm')?.style.display = 'none';
+        const sectionDropdown = document.getElementById('sectionDropdown');
+        const classDropdown = document.getElementById('classDropdown');
+        const sectionDeptDropdown = document.getElementById('sectionDeptDropdown');
+        const studentListTbody = document.getElementById('studentList');
+        const studentSearch = document.getElementById('studentSearch');
+        const searchButton = document.getElementById('searchButton');
 
-            if (type === 'School') {
-                document.getElementById('formContainer').style.display = 'block';
-                document.getElementById('schoolForm').style.display = 'block';
-            } else if (type === 'College') {
-                document.getElementById('formContainer').style.display = 'block';
-                document.getElementById('collegeForm').style.display = 'block';
+        const studentActions = document.getElementById('studentActions');
+        const updateForm = document.getElementById('updateForm');
+        const addForm = document.getElementById('addForm');
+        const successMsg = document.getElementById('successMsg');
+
+        const updateBtn = document.getElementById('updateStudentBtn');
+        const deleteBtn = document.getElementById('deleteStudentBtn');
+        const saveUpdateBtn = document.getElementById('saveUpdateBtn');
+
+        const addBtn = document.getElementById('addStudentBtn');
+        const saveAddBtn = document.getElementById('saveAddBtn');
+
+        const updName = document.getElementById('updName');
+        const updRegNo = document.getElementById('updRegNo');
+        const updClassYear = document.getElementById('updClassYear');
+        const updSection = document.getElementById('updSection');
+        const updParent = document.getElementById('updParent');
+
+        const addName = document.getElementById('addName');
+        const addRegNo = document.getElementById('addRegNo');
+        const addClassYear = document.getElementById('addClassYear');
+        const addSection = document.getElementById('addSection');
+        const addParent = document.getElementById('addParent');
+
+        const schoolClasses = ["Nursery","KG","Prep","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"];
+        const schoolSections = ["Rose Model","Rose","Lily","Daffodil"];
+        const collegeClasses = ["1st Year","2nd Year"];
+        const collegeDepartments = ["Pre-Medical","Pre-Engineering","Computer Science","Commerce","Humanity"];
+
+        let studentsData = [
+            { Name: "Ali Khan", RegNo: "SCH001", Section: "Rose", ClassYear: "1st", Parent: "Mr. Khan", Type: "School" },
+            { Name: "Sara Ahmed", RegNo: "COL001", Section: "Pre-Medical", ClassYear: "1st Year", Parent: "Mr. Ahmed", Type: "College" }
+        ];
+
+        let selectedStudent = null;
+
+        // Populate Class dropdown based on section
+        sectionDropdown.addEventListener('change', () => {
+            classDropdown.innerHTML = '<option value="">-- Select Class / Year --</option>';
+            sectionDeptDropdown.innerHTML = '<option value="">-- Select Section / Department --</option>';
+            studentListTbody.innerHTML = '';
+
+            if (sectionDropdown.value === "School") {
+                schoolClasses.forEach(c => classDropdown.innerHTML += `<option value="${c}">${c}</option>`);
+                schoolSections.forEach(s => sectionDeptDropdown.innerHTML += `<option value="${s}">${s}</option>`);
+            } else if (sectionDropdown.value === "College") {
+                collegeClasses.forEach(c => classDropdown.innerHTML += `<option value="${c}">${c}</option>`);
+                collegeDepartments.forEach(d => sectionDeptDropdown.innerHTML += `<option value="${d}">${d}</option>`);
             }
+        });
+
+        // Render students
+        function renderStudents(filtered) {
+            studentListTbody.innerHTML = '';
+            filtered.forEach((stu, index) => {
+                const tr = document.createElement('tr');
+                tr.style.backgroundColor = index % 2 === 0 ? '#f9fafb' : '#ffffff';
+                tr.classList.add('border-b','hover:bg-gray-200','transition','duration-200');
+                tr.innerHTML = `
+                    <td class="p-2 border-r border-gray-300">${stu.RegNo}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.Name}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.Section}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.ClassYear}</td>
+                    <td class="p-2 border-r border-gray-300">${stu.Parent}</td>
+                    <td class="p-2 text-center">
+                        <button type="button" class="w-6 h-6 border-2 border-gray-400 rounded-full selectBtn"></button>
+                    </td>`;
+                const btn = tr.querySelector(".selectBtn");
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".selectBtn").forEach(b => b.classList.remove("bg-green-500"));
+                    btn.classList.add("bg-green-500");
+                    selectedStudent = stu;
+                    studentActions.classList.remove('hidden');
+                    updateForm.classList.add('hidden');
+                    addForm.classList.add('hidden');
+                });
+                studentListTbody.appendChild(tr);
+            });
         }
 
-        function showAddForm() {
-            const type = document.getElementById('studentType').value;
-            if (!type) {
-                alert('Please select School or College first.');
-                return;
+        // Search button click
+        searchButton.addEventListener('click', () => {
+            const selectedClass = classDropdown.value;
+            const selectedSection = sectionDeptDropdown.value;
+            const selectedType = sectionDropdown.value;
+            const term = studentSearch.value.toLowerCase();
+
+            const filtered = studentsData.filter(s =>
+                (!selectedClass || s.ClassYear === selectedClass) &&
+                (!selectedSection || s.Section === selectedSection) &&
+                (!selectedType || s.Type === selectedType) &&
+                (!term || s.Name.toLowerCase().includes(term) || s.RegNo.toLowerCase().includes(term))
+            );
+
+            renderStudents(filtered);
+        });
+
+        // Delete student with confirm
+        deleteBtn.addEventListener('click', () => {
+            if (selectedStudent && confirm(`Are you sure you want to delete ${selectedStudent.Name}?`)) {
+                studentsData = studentsData.filter(s => s.RegNo !== selectedStudent.RegNo);
+                studentActions.classList.add('hidden');
+                renderStudents(studentsData);
+                successMsg.textContent = "Student deleted successfully!";
+                successMsg.classList.remove('hidden');
+                setTimeout(() => successMsg.classList.add('hidden'), 3000);
+                selectedStudent = null;
             }
-            onTypeChange();
-            setTimeout(() => document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' }), 100);
-        }
+        });
 
-        function hideForm() {
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('schoolForm')?.style.display = 'none';
-            document.getElementById('collegeForm')?.style.display = 'none';
-        }
+        // Update button
+        updateBtn.addEventListener('click', () => {
+            if (selectedStudent) {
+                sectionDropdown.value = selectedStudent.Type;
+                updName.value = selectedStudent.Name;
+                updRegNo.value = selectedStudent.RegNo;
+                updClassYear.value = selectedStudent.ClassYear;
+                updSection.value = selectedStudent.Section;
+                updParent.value = selectedStudent.Parent;
+
+                updateForm.classList.remove('hidden');
+                addForm.classList.add('hidden');
+            }
+        });
+
+        // Save update
+        saveUpdateBtn.addEventListener('click', () => {
+            if (selectedStudent) {
+                selectedStudent.Name = updName.value;
+                selectedStudent.ClassYear = updClassYear.value;
+                selectedStudent.Section = updSection.value;
+                selectedStudent.Parent = updParent.value;
+
+                renderStudents(studentsData);
+                updateForm.classList.add('hidden');
+                studentActions.classList.add('hidden');
+                successMsg.textContent = "Student updated successfully!";
+                successMsg.classList.remove('hidden');
+                setTimeout(() => successMsg.classList.add('hidden'), 3000);
+                selectedStudent = null;
+            }
+        });
+
+        // Add student button
+        addBtn.addEventListener('click', () => {
+            addForm.classList.toggle('hidden');
+            updateForm.classList.add('hidden');
+        });
+
+        // Save new student
+        saveAddBtn.addEventListener('click', () => {
+            const newStu = {
+                Name: addName.value,
+                RegNo: addRegNo.value,
+                ClassYear: addClassYear.value,
+                Section: addSection.value,
+                Parent: addParent.value,
+                Type: sectionDropdown.value
+            };
+            studentsData.push(newStu);
+            renderStudents(studentsData);
+            addForm.classList.add('hidden');
+            successMsg.textContent = "Student added successfully!";
+            successMsg.classList.remove('hidden');
+            setTimeout(() => successMsg.classList.add('hidden'), 3000);
+        });
     </script>
 }
+
