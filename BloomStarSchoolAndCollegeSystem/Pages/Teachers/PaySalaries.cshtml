@@ -1,21 +1,55 @@
-﻿@page
+﻿@page "{id:int}"
 @model BloomStarSchoolAndCollegeSystem.Pages.Teachers.PaySalariesModel
 @{
-    ViewData["Title"] = "Pay Salaries";
+    ViewData["Title"] = "Pay Salary";
 }
 
-<h2 class="text-2xl font-bold mb-4">Pay Teacher Salary</h2>
+<div class="flex justify-center items-center min-h-screen bg-gray-100 py-10">
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
+        <h2 class="text-2xl font-bold mb-6 text-blue-900 text-center">Pay Salary</h2>
 
-<form method="post">
-    <div class="mb-3">
-        <label for="TeacherId">Select Teacher</label>
-        <select asp-for="TeacherId" asp-items="Model.TeacherList" class="form-control"></select>
+        <!-- Success Message -->
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="mb-4 p-3 rounded bg-green-100 text-green-800 shadow">
+                @Model.SuccessMessage
+            </div>
+        }
+
+        <form method="post" class="space-y-6">
+
+            <input type="hidden" asp-for="Teacher.Id" />
+
+            <!-- Teacher Info -->
+            <div>
+                <label class="block font-semibold mb-1 text-gray-700">Teacher Name</label>
+                <input value="@Model.Teacher.Name" class="w-full border border-gray-300 rounded-lg p-3 bg-gray-100" readonly />
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1 text-gray-700">Net Salary</label>
+                <input value="@Model.Teacher.NetSalary" class="w-full border border-gray-300 rounded-lg p-3 bg-gray-100" readonly />
+            </div>
+
+            <!-- Amount to Pay -->
+            <div>
+                <label asp-for="PaymentAmount" class="block font-semibold mb-1 text-gray-700">Amount to Pay</label>
+                <input asp-for="PaymentAmount" type="number" min="0" max="@Model.Teacher.NetSalary - @Model.Teacher.TotalPaid" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 shadow-sm" />
+                <span asp-validation-for="PaymentAmount" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Remaining Salary (calculated dynamically) -->
+            <div>
+                <label class="block font-semibold mb-1 text-gray-700">Remaining Salary</label>
+                <input value="@Model.RemainingSalary" class="w-full border border-gray-300 rounded-lg p-3 bg-gray-100" readonly />
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-center">
+                <button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-green-700 transition">
+                    Pay Salary
+                </button>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label for="PaidAmount">Paid Amount</label>
-        <input asp-for="PaidAmount" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Pay</button>
-</form>
+</div>

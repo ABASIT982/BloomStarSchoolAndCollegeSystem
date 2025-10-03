@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using BloomStarSchoolAndCollegeSystem.Data;
 using BloomStarSchoolAndCollegeSystem.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
 {
@@ -19,7 +19,7 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
 
         public void OnGet()
         {
-            Teachers = _context.Teachers.ToList();
+            Teachers = _context.Teachers.ToList(); // fetch all teachers
         }
     }
 }

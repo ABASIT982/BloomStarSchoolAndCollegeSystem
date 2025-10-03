@@ -4,24 +4,52 @@
     ViewData["Title"] = "Teacher Salaries";
 }
 
-<h2 class="text-2xl font-bold mb-4">Teacher Salaries</h2>
+<div class="bg-white shadow-xl rounded-2xl p-6">
+    <h2 class="text-2xl font-bold mb-6 text-blue-900 text-center">Teacher Salaries</h2>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Net Salary</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model.Teachers)
-        {
+    <table class="min-w-full border-collapse bg-white shadow rounded-lg overflow-hidden">
+        <thead class="bg-blue-600 text-white">
             <tr>
-                <td>@t.Name</td>
-                <td>@t.NetSalary</td>
-                <td>@t.SalaryStatus</td>
+                <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Subject</th>
+                <th class="py-3 px-4 text-center">Basic</th>
+                <th class="py-3 px-4 text-center">Allowance</th>
+                <th class="py-3 px-4 text-center">Deductions</th>
+                <th class="py-3 px-4 text-center">Net Salary</th>
+                <th class="py-3 px-4 text-center">Total Paid</th>
+                <th class="py-3 px-4 text-center">Remaining</th>
+                <th class="py-3 px-4 text-center">Status</th>
+                <th class="py-3 px-4 text-center">Action</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.Teachers)
+            {
+                var remaining = t.NetSalary - t.TotalPaid;
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-4">@t.Name</td>
+                    <td class="py-3 px-4">@t.Subject</td>
+                    <td class="py-3 px-4 text-center">@t.BasicSalary</td>
+                    <td class="py-3 px-4 text-center">@t.Allowance</td>
+                    <td class="py-3 px-4 text-center">@t.Deductions</td>
+                    <td class="py-3 px-4 text-center font-semibold text-green-700">@t.NetSalary</td>
+                    <td class="py-3 px-4 text-center">@t.TotalPaid</td>
+                    <td class="py-3 px-4 text-center">@remaining</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="px-3 py-1 rounded-lg text-white @(t.SalaryStatus == "Paid" ? "bg-green-600" : t.SalaryStatus == "Partial" ? "bg-yellow-500" : "bg-red-500")">@t.SalaryStatus</span>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        @if (remaining > 0)
+                        {
+                            <a asp-page="PaySalaries" asp-route-id="@t.Id" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Pay</a>
+                        }
+                        else
+                        {
+                            <span class="text-gray-500">Paid</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

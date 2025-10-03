@@ -42,5 +42,9 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         // Computed, not mapped to DB
         [NotMapped]
         public decimal NetSalary => (BasicSalary + Allowance) - Deductions;
+        // Total salary already paid
+        [Range(0, double.MaxValue)]
+        public decimal TotalPaid { get; set; } = 0;
+
     }
 }

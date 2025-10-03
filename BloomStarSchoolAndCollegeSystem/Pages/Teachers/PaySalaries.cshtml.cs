@@ -1,9 +1,9 @@
-using System.Linq;
 using BloomStarSchoolAndCollegeSystem.Data;
 using BloomStarSchoolAndCollegeSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
 {
@@ -17,38 +17,60 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
         }
 
         [BindProperty]
-        public int TeacherId { get; set; }
+        public Teacher Teacher { get; set; } = new Teacher();
 
         [BindProperty]
-        public decimal PaidAmount { get; set; }
+        [Required(ErrorMessage = "Enter the amount to pay.")]
+        [Range(0, double.MaxValue, ErrorMessage = "Amount must be positive.")]
+        public decimal PaymentAmount { get; set; }
 
-        public SelectList TeacherList { get; set; } = default!;
+        public decimal RemainingSalary { get; set; }
 
-        public void OnGet()
+        public string? SuccessMessage { get; set; } // Store success message
+
+        public IActionResult OnGet(int id)
         {
-            TeacherList = new SelectList(_context.Teachers, "Id", "Name");
+            Teacher = _context.Teachers.FirstOrDefault(t => t.Id == id);
+            if (Teacher == null)
+                return RedirectToPage("TeacherSalaries");
+
+            RemainingSalary = Teacher.NetSalary - Teacher.TotalPaid;
+            return Page();
         }
 
         public IActionResult OnPost()
         {
-            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == TeacherId);
-            if (teacher == null) return Page();
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == Teacher.Id);
+            if (teacher == null)
+                return RedirectToPage("TeacherSalaries");
 
-            if (PaidAmount >= teacher.NetSalary)
+            decimal remainingBefore = teacher.NetSalary - teacher.TotalPaid;
+
+            if (PaymentAmount <= 0 || PaymentAmount > remainingBefore)
             {
-                teacher.SalaryStatus = "Paid";
+                ModelState.AddModelError("PaymentAmount", "Invalid payment amount.");
+                Teacher = teacher;
+                RemainingSalary = remainingBefore;
+                return Page();
             }
-            else if (PaidAmount > 0)
-            {
-                teacher.SalaryStatus = "Partial";
-            }
-            else
-            {
-                teacher.SalaryStatus = "Pending";
-            }
+
+            // Update TotalPaid
+            teacher.TotalPaid += PaymentAmount;
+
+            // Update Salary Status
+            var remainingAfter = teacher.NetSalary - teacher.TotalPaid;
+            if (remainingAfter == 0) teacher.SalaryStatus = "Paid";
+            else if (remainingAfter < teacher.NetSalary) teacher.SalaryStatus = "Partial";
+            else teacher.SalaryStatus = "Pending";
 
             _context.SaveChanges();
-            return RedirectToPage("TeacherSalaries");
+
+            // Show message on the same page
+            Teacher = teacher;
+            RemainingSalary = remainingAfter;
+            SuccessMessage = $"Paid {PaymentAmount:C} to {teacher.Name}. Remaining: {remainingAfter:C}";
+
+            return Page();
         }
     }
 }

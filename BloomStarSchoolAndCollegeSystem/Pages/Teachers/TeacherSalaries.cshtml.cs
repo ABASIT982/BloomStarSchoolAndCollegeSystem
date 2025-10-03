@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using BloomStarSchoolAndCollegeSystem.Data;
 using BloomStarSchoolAndCollegeSystem.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
 {

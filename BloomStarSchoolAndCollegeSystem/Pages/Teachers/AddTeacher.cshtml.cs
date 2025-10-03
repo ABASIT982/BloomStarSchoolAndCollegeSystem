@@ -29,22 +29,16 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Teachers
             if (!ModelState.IsValid)
                 return Page();
 
-            // Handle photo upload
             if (Photo != null)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Photo.FileName);
+                var uniqueFileName = Guid.NewGuid() + Path.GetExtension(Photo.FileName);
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    Photo.CopyTo(stream);
-                }
+                using var stream = new FileStream(filePath, FileMode.Create);
+                Photo.CopyTo(stream);
 
                 Teacher.PhotoPath = "/uploads/" + uniqueFileName;
             }
