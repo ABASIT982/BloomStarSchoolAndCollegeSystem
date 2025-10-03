@@ -32,6 +32,86 @@ Updated EF Core model to match database changes
 
 Bug Fixes
 
+✨ New Features Added
+
+🔹 Admissions
+
+Add New Admission
+
+Supports School and College students.
+
+Dropdowns for Class/Year and Section/Department.
+
+Photo upload with preview before saving.
+
+Reset button (clears form + preview).
+
+Fully responsive Tailwind UI with professional design.
+
+Update Admission
+
+Admin can update existing student details (Name, Parent Info, Contact, Address, Class/Year, Section/Department, Photo).
+
+Smooth modal-based editing with form validation.
+
+Manage Admissions
+
+Filter students by Type (School/College), Class/Year, Section/Department, or search by Name/Parent.
+
+Auto-refresh filters (no need to click Apply).
+
+Students displayed in a professional table format with:
+
+Circle photo
+
+All details in row format
+
+Action buttons (Update / Delete)
+
+Delete removes record from database with confirmation + success message.
+
+Update opens modal with editable details.
+
+🔹 Teachers
+
+Add New Teacher
+
+Form for adding teacher details (Name, Subject, Contact, Address, Salary, etc.).
+
+Photo upload with preview before saving.
+
+Reset button included for convenience.
+
+Teacher Listing
+
+Displays all teachers in a row format table.
+
+Circle photo, teacher info, subject, contact, salary details shown.
+
+Options for Update and Delete teacher records.
+
+Fully responsive UI for professional use.
+
+Teacher Salaries
+
+Admin can manage and view teacher salaries.
+
+Shows list of all teachers with their current salary status.
+
+Option to mark salary as Paid / Unpaid.
+
+Salary details updated in database.
+
+Success messages after payment action.
+
+Pay Salaries Page
+
+Separate page for handling salary payments.
+
+Teachers listed with Salary Amount + Payment Button.
+
+Once paid, salary status updates immediately with confirmation message.
+
 Fixed navigation issues between Admin and Students sections
 
 Fixed missing layout reference and @click error
