@@ -10,21 +10,68 @@
                     <h5>Add Student</h5>
                 </div>
                 <div class="modal-body">
+                    <!-- Student Type -->
+                    <label>Student Type</label>
+                    <select asp-for="StudentType" class="form-control mb-2" id="studentType">
+                        <option value="">-- Select --</option>
+                        <option value="School">School</option>
+                        <option value="College">College</option>
+                    </select>
+
+                    <!-- Common Fields -->
                     <input asp-for="Name" placeholder="Name" class="form-control mb-2" />
                     <input asp-for="ParentName" placeholder="Parent Name" class="form-control mb-2" />
                     <input asp-for="ParentPhone" placeholder="Parent Phone" class="form-control mb-2" />
 
-                    @if (Model.StudentType == "School")
-                    {
-                        <input asp-for="GradeName" placeholder="Class" class="form-control mb-2" />
-                        <input asp-for="SectionName" placeholder="Section" class="form-control mb-2" />
-                    }
-                    else
-                    {
-                        <input asp-for="Year" placeholder="Year" class="form-control mb-2" />
-                        <input asp-for="Department" placeholder="Department" class="form-control mb-2" />
+                    <!-- School Fields -->
+                    <div id="schoolFields" style="display:none;">
+                        <label>Class</label>
+                        <select asp-for="GradeName" class="form-control mb-2">
+                            <option value="">-- Select Class --</option>
+                            <option>Nursery</option>
+                            <option>KG</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+
+                        <label>Section</label>
+                        <select asp-for="SectionName" class="form-control mb-2">
+                            <option value="">-- Select Section --</option>
+                            <option>Rose</option>
+                            <option>Lily</option>
+                            <option>Sunflower</option>
+                            <option>Tulip</option>
+                        </select>
+                    </div>
+
+                    <!-- College Fields -->
+                    <div id="collegeFields" style="display:none;">
+                        <label>Year</label>
+                        <select asp-for="Year" class="form-control mb-2">
+                            <option value="">-- Select Year --</option>
+                            <option>First Year</option>
+                            <option>Second Year</option>
+                        </select>
+
+                        <label>Department</label>
+                        <select asp-for="Department" class="form-control mb-2">
+                            <option value="">-- Select Department --</option>
+                            <option>Computer Science</option>
+                            <option>Biology</option>
+                            <option>Commerce</option>
+                            <option>Mathematics</option>
+                        </select>
+
                         <input asp-for="Email" placeholder="Email" class="form-control mb-2" />
-                    }
+                    </div>
 
                     <input asp-for="Address" placeholder="Address" class="form-control mb-2" />
                 </div>
@@ -35,3 +82,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById("studentType").addEventListener("change", function () {
+            var type = this.value;
+            document.getElementById("schoolFields").style.display = (type === "School") ? "block" : "none";
+            document.getElementById("collegeFields").style.display = (type === "College") ? "block" : "none";
+        });
+    </script>
+}

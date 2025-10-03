@@ -1,0 +1,35 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Teachers.AllTeachersModel
+@{
+    ViewData["Title"] = "All Teachers";
+}
+
+<h2 class="text-2xl font-bold mb-4">All Teachers</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Qualification</th>
+            <th>Basic Salary</th>
+            <th>Allowance</th>
+            <th>Deductions</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.Teachers)
+        {
+            <tr>
+                <td>@t.Name</td>
+                <td>@t.Subject</td>
+                <td>@t.Qualification</td>
+                <td>@t.BasicSalary</td>
+                <td>@t.Allowance</td>
+                <td>@t.Deductions</td>
+                <td>@t.SalaryStatus</td>
+            </tr>
+        }
+    </tbody>
+</table>

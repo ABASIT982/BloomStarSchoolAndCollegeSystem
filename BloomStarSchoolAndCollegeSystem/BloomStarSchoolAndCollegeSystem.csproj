@@ -23,7 +23,6 @@
     <Folder Include="Pages\Fees\" />
     <Folder Include="Pages\Reports\" />
     <Folder Include="Pages\Scholarships\" />
-    <Folder Include="Pages\Teachers\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\images\teachers\" />
   </ItemGroup>

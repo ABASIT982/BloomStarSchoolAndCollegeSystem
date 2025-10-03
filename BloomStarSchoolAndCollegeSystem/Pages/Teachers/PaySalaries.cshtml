@@ -1,0 +1,21 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Teachers.PaySalariesModel
+@{
+    ViewData["Title"] = "Pay Salaries";
+}
+
+<h2 class="text-2xl font-bold mb-4">Pay Teacher Salary</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="TeacherId">Select Teacher</label>
+        <select asp-for="TeacherId" asp-items="Model.TeacherList" class="form-control"></select>
+    </div>
+
+    <div class="mb-3">
+        <label for="PaidAmount">Paid Amount</label>
+        <input asp-for="PaidAmount" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Pay</button>
+</form>

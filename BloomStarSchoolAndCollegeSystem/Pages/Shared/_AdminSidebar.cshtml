@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <aside class="admin-sidebar hidden md:block w-64 min-h-screen fixed top-20 left-0 p-4"
-       x-data="{ studentOpen: false }">
+       x-data="{ studentOpen: false, teacherOpen: false }">
     <nav class="space-y-2">
 
         <!-- Dashboard -->
@@ -49,12 +49,39 @@
         </div>
 
 
-        <!-- Other main items -->
-        <a asp-page="/Admin/Teachers"
-           class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
-            <i class="bi bi-person-badge"></i><span>Teachers</span>
-        </a>
+        <!-- ✅ Teachers with dropdown -->
+        <button type="button"
+                class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-blue-700 text-left"
+                @@click="teacherOpen = !teacherOpen">
+            <span class="flex items-center gap-3">
+                <i class="bi bi-person-badge"></i><span>Teachers</span>
+            </span>
+            <i class="bi" :class="teacherOpen ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
 
+        <!-- Teacher submenu -->
+        <div x-show="teacherOpen" x-collapse
+             class="ml-6 mt-1 border-l border-blue-700 pl-3 space-y-1 text-sm text-blue-100">
+            <a asp-page="/Teachers/AddTeacher"
+               class="block px-3 py-1.5 rounded hover:bg-blue-600">
+                Add New Teacher
+            </a>
+            <a asp-page="/Teachers/AllTeacher"
+               class="block px-3 py-1.5 rounded hover:bg-blue-600">
+                All Teachers
+            </a>
+            <a asp-page="/Teachers/TeacherSalaries"
+               class="block px-3 py-1.5 rounded hover:bg-blue-600">
+                Teacher Salaries
+            </a>
+            <a asp-page="/Teachers/PaySalaries"
+               class="block px-3 py-1.5 rounded hover:bg-blue-600">
+                Pay Salary
+            </a>
+        </div>
+
+
+        <!-- Other main items -->
         <a asp-page="/Admin/Admissions"
            class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
             <i class="bi bi-journal-text"></i><span>Admissions</span>

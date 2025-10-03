@@ -1,0 +1,106 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Teachers.AddTeacherModel
+@{
+    ViewData["Title"] = "Add Teacher";
+}
+
+<div class="flex justify-center items-start min-h-screen bg-gray-100 py-10">
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-3xl">
+        <h2 class="text-3xl font-bold mb-6 text-blue-900 text-center">Add New Teacher</h2>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="mb-4 p-3 rounded bg-green-100 text-green-800 shadow">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- Name -->
+            <div>
+                <label asp-for="Teacher.Name" class="block font-semibold mb-1 text-gray-700"></label>
+                <input asp-for="Teacher.Name" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+                <span asp-validation-for="Teacher.Name" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Subject -->
+            <div>
+                <label asp-for="Teacher.Subject" class="block font-semibold mb-1 text-gray-700"></label>
+                <input asp-for="Teacher.Subject" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+            </div>
+
+            <!-- Qualification -->
+            <div>
+                <label asp-for="Teacher.Qualification" class="block font-semibold mb-1 text-gray-700"></label>
+                <input asp-for="Teacher.Qualification" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+            </div>
+
+            <!-- Address -->
+            <div>
+                <label asp-for="Teacher.Address" class="block font-semibold mb-1 text-gray-700"></label>
+                <textarea asp-for="Teacher.Address" rows="3" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"></textarea>
+            </div>
+
+            <!-- Contact -->
+            <div>
+                <label asp-for="Teacher.Contact" class="block font-semibold mb-1 text-gray-700"></label>
+                <input asp-for="Teacher.Contact" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+            </div>
+
+            <!-- Gender -->
+            <div>
+                <label asp-for="Teacher.Gender" class="block font-semibold mb-1 text-gray-700"></label>
+                <select asp-for="Teacher.Gender" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <!-- Photo Upload -->
+            <div>
+                <label asp-for="Teacher.PhotoPath" class="block font-semibold mb-1 text-gray-700">Photo</label>
+                <input type="file" name="Photo" class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+            </div>
+
+            <!-- Salary Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label asp-for="Teacher.BasicSalary" class="block font-semibold mb-1 text-gray-700"></label>
+                    <input asp-for="Teacher.BasicSalary" type="number" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+                </div>
+                <div>
+                    <label asp-for="Teacher.Allowance" class="block font-semibold mb-1 text-gray-700"></label>
+                    <input asp-for="Teacher.Allowance" type="number" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+                </div>
+                <div>
+                    <label asp-for="Teacher.Deductions" class="block font-semibold mb-1 text-gray-700"></label>
+                    <input asp-for="Teacher.Deductions" type="number" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" />
+                </div>
+            </div>
+
+            <!-- Salary Status -->
+            <div>
+                <label asp-for="Teacher.SalaryStatus" class="block font-semibold mb-1 text-gray-700"></label>
+                <select asp-for="Teacher.SalaryStatus" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Partial">Partial</option>
+                </select>
+            </div>
+
+            <!-- Net Salary (calculated) -->
+            <div>
+                <label class="block font-semibold mb-1 text-gray-700">Net Salary</label>
+                <input value="@Model.Teacher.NetSalary" class="w-full border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-700" readonly />
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-center">
+                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                    Save Teacher
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
