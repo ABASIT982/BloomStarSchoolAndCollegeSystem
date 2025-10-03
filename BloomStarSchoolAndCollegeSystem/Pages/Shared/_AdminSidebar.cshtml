@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <aside class="admin-sidebar hidden md:block w-64 min-h-screen fixed top-20 left-0 p-4"
-       x-data="{ studentOpen: false, teacherOpen: false }">
+       x-data="{ studentOpen: false, teacherOpen: false, admissionOpen: false }">
     <nav class="space-y-2">
 
         <!-- Dashboard -->
@@ -12,7 +12,7 @@
             <i class="bi bi-speedometer2"></i><span>Dashboard</span>
         </a>
 
-        <!-- ✅ Students with dropdown -->
+        <!-- Students Dropdown -->
         <button type="button"
                 class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-blue-700 text-left"
                 @@click="studentOpen = !studentOpen">
@@ -23,33 +23,16 @@
                :class="studentOpen ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
         </button>
 
-        <!-- Submenu -->
         <div x-show="studentOpen" x-collapse
              class="ml-6 mt-1 border-l border-blue-700 pl-3 space-y-1 text-sm text-blue-100">
-            <a asp-page="/Students/School/Index"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                School Students
-            </a>
-            <a asp-page="/Students/College/Index"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                College Students
-            </a>
-            <a asp-page="/Students/FeeDetails"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Fee Details
-            </a>
-            <a asp-page="/Students/Scholarships/Index"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Scholarships
-            </a>
-            <a asp-page="/Students/ManageStudents"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Add / Update / Delete
-            </a>
+            <a asp-page="/Students/School/Index" class="block px-3 py-1.5 rounded hover:bg-blue-600">School Students</a>
+            <a asp-page="/Students/College/Index" class="block px-3 py-1.5 rounded hover:bg-blue-600">College Students</a>
+            <a asp-page="/Students/FeeDetails" class="block px-3 py-1.5 rounded hover:bg-blue-600">Fee Details</a>
+            <a asp-page="/Students/Scholarships/Index" class="block px-3 py-1.5 rounded hover:bg-blue-600">Scholarships</a>
+            <a asp-page="/Students/ManageStudents" class="block px-3 py-1.5 rounded hover:bg-blue-600">Add / Update / Delete</a>
         </div>
 
-
-        <!-- ✅ Teachers with dropdown -->
+        <!-- Teachers Dropdown -->
         <button type="button"
                 class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-blue-700 text-left"
                 @@click="teacherOpen = !teacherOpen">
@@ -59,42 +42,38 @@
             <i class="bi" :class="teacherOpen ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
         </button>
 
-        <!-- Teacher submenu -->
         <div x-show="teacherOpen" x-collapse
              class="ml-6 mt-1 border-l border-blue-700 pl-3 space-y-1 text-sm text-blue-100">
-            <a asp-page="/Teachers/AddTeacher"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Add New Teacher
-            </a>
-            <a asp-page="/Teachers/AllTeacher"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                All Teachers
-            </a>
-            <a asp-page="/Teachers/TeacherSalaries"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Teacher Salaries
-            </a>
-            <a asp-page="/Teachers/PaySalaries"
-               class="block px-3 py-1.5 rounded hover:bg-blue-600">
-                Pay Salary
-            </a>
+            <a asp-page="/Teachers/AddTeacher" class="block px-3 py-1.5 rounded hover:bg-blue-600">Add New Teacher</a>
+            <a asp-page="/Teachers/AllTeacher" class="block px-3 py-1.5 rounded hover:bg-blue-600">All Teachers</a>
+            <a asp-page="/Teachers/TeacherSalaries" class="block px-3 py-1.5 rounded hover:bg-blue-600">Teacher Salaries</a>
+            <a asp-page="/Teachers/PaySalaries" class="block px-3 py-1.5 rounded hover:bg-blue-600">Pay Salary</a>
         </div>
 
+        <!-- ✅ Admissions Dropdown -->
+        <button type="button"
+                class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-blue-700 text-left"
+                @@click="admissionOpen = !admissionOpen">
+            <span class="flex items-center gap-3">
+                <i class="bi bi-journal-text"></i><span>Admissions</span>
+            </span>
+            <i class="bi" :class="admissionOpen ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
+
+        <div x-show="admissionOpen" x-collapse
+             class="ml-6 mt-1 border-l border-blue-700 pl-3 space-y-1 text-sm text-blue-100">
+            <a asp-page="/Admissions/NewAdmission" class="block px-3 py-1.5 rounded hover:bg-blue-600">New Admission</a>
+            <a asp-page="/Admissions/ManageAdmission" class="block px-3 py-1.5 rounded hover:bg-blue-600">Manage Admission</a>
+        </div>
 
         <!-- Other main items -->
-        <a asp-page="/Admin/Admissions"
-           class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
-            <i class="bi bi-journal-text"></i><span>Admissions</span>
-        </a>
-
-        <a asp-page="/Admin/Finance"
-           class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+        <a asp-page="/Admin/Finance" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
             <i class="bi bi-cash-coin"></i><span>Finance</span>
         </a>
 
-        <a asp-page="/Admin/Reports"
-           class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
+        <a asp-page="/Admin/Reports" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-700">
             <i class="bi bi-bar-chart-line"></i><span>Reports</span>
         </a>
+
     </nav>
 </aside>

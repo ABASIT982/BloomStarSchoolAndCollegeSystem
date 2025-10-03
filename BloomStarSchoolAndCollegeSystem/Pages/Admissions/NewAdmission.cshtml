@@ -1,0 +1,224 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Admissions.NewAdmissionModel
+@{
+    ViewData["Title"] = "New Admission";
+}
+
+<h1 class="text-3xl font-bold mb-6 text-blue-900">New Admission</h1>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="bg-green-200 text-green-800 p-3 rounded mb-4 shadow">
+        @Model.SuccessMessage
+    </div>
+}
+
+<form method="post" enctype="multipart/form-data" id="admissionForm" class="space-y-6">
+
+    <!-- Dropdowns (always visible) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label class="block font-semibold mb-1">Student Type</label>
+            <select asp-for="StudentType" class="border rounded p-2 w-full" id="studentType">
+                <option value="">Select Student Type</option>
+                <option value="School">School</option>
+                <option value="College">College</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block font-semibold mb-1">Grade / Year</label>
+            <select asp-for="SelectedGrade" class="border rounded p-2 w-full" id="gradeDropdown">
+                <option value="">Select Grade/Year</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block font-semibold mb-1">Section / Department</label>
+            <select asp-for="SelectedSection" class="border rounded p-2 w-full" id="sectionDropdown">
+                <option value="">Select Section/Department</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Dynamic Form -->
+    <div id="dynamicForm" class="space-y-6 mt-6" style="display:none;">
+
+        <!-- School Form -->
+        <div id="schoolForm" class="bg-blue-50 border-l-4 border-blue-700 p-6 rounded shadow-md" style="display:none;">
+            <h3 class="text-xl font-bold mb-4 text-blue-900">School Student Info</h3>
+            <input type="hidden" asp-for="SchoolStudent.GradeName" id="schoolGrade" />
+            <input type="hidden" asp-for="SchoolStudent.SectionName" id="schoolSection" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Student Name</label>
+                    <input asp-for="SchoolStudent.Name" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Parent Name</label>
+                    <input asp-for="SchoolStudent.ParentName" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Parent Phone</label>
+                    <input asp-for="SchoolStudent.ParentPhone" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Address</label>
+                    <input asp-for="SchoolStudent.Address" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Class</label>
+                    <input type="text" id="readonlySchoolGrade" readonly class="border rounded p-2 bg-gray-100 w-full" />
+                </div>
+                <div>
+                    <label>Section</label>
+                    <input type="text" id="readonlySchoolSection" readonly class="border rounded p-2 bg-gray-100 w-full" />
+                </div>
+                <div class="col-span-2">
+                    <label>Photo</label>
+                    <input type="file" asp-for="UploadedPhoto" class="border rounded p-2 w-full" id="schoolPhoto" />
+                    <img id="schoolPreview" class="mt-2 max-h-32 rounded shadow" style="display:none;" />
+                </div>
+            </div>
+        </div>
+
+        <!-- College Form -->
+        <div id="collegeForm" class="bg-blue-50 border-l-4 border-blue-700 p-6 rounded shadow-md" style="display:none;">
+            <h3 class="text-xl font-bold mb-4 text-blue-900">College Student Info</h3>
+            <input type="hidden" asp-for="CollegeStudent.GradeName" id="collegeGrade" />
+            <input type="hidden" asp-for="CollegeStudent.Department" id="collegeDept" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Student Name</label>
+                    <input asp-for="CollegeStudent.Name" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Parent Name</label>
+                    <input asp-for="CollegeStudent.ParentName" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Parent Phone</label>
+                    <input asp-for="CollegeStudent.ParentPhone" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input asp-for="CollegeStudent.Email" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Address</label>
+                    <input asp-for="CollegeStudent.Address" class="border rounded p-2 w-full" />
+                </div>
+                <div>
+                    <label>Year</label>
+                    <input type="text" id="readonlyCollegeGrade" readonly class="border rounded p-2 bg-gray-100 w-full" />
+                </div>
+                <div>
+                    <label>Department</label>
+                    <input type="text" id="readonlyCollegeDept" readonly class="border rounded p-2 bg-gray-100 w-full" />
+                </div>
+                <div class="col-span-2">
+                    <label>Photo</label>
+                    <input type="file" asp-for="UploadedPhoto" class="border rounded p-2 w-full" id="collegePhoto" />
+                    <img id="collegePreview" class="mt-2 max-h-32 rounded shadow" style="display:none;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-4">
+            <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded shadow hover:bg-blue-800">
+                Add Student
+            </button>
+            <button type="button" id="resetBtn" class="bg-gray-500 text-white px-6 py-2 rounded shadow hover:bg-gray-600">
+                Reset Form
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+    const studentType = document.getElementById('studentType');
+    const gradeDropdown = document.getElementById('gradeDropdown');
+    const sectionDropdown = document.getElementById('sectionDropdown');
+    const dynamicForm = document.getElementById('dynamicForm');
+    const schoolForm = document.getElementById('schoolForm');
+    const collegeForm = document.getElementById('collegeForm');
+
+    const readonlySchoolGrade = document.getElementById('readonlySchoolGrade');
+    const readonlySchoolSection = document.getElementById('readonlySchoolSection');
+    const schoolGradeHidden = document.getElementById('schoolGrade');
+    const schoolSectionHidden = document.getElementById('schoolSection');
+    const schoolPreview = document.getElementById('schoolPreview');
+
+    const readonlyCollegeGrade = document.getElementById('readonlyCollegeGrade');
+    const readonlyCollegeDept = document.getElementById('readonlyCollegeDept');
+    const collegeGradeHidden = document.getElementById('collegeGrade');
+    const collegeDeptHidden = document.getElementById('collegeDept');
+    const collegePreview = document.getElementById('collegePreview');
+
+    const schoolGrades = ["Nursery","KG","Prep","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th"];
+    const schoolSections = ["Rose Model","Rose","Lily","Daffodil"];
+    const collegeYears = ["First Year","Second Year"];
+    const collegeDepts = ["Pre-Medical","Pre-Engineering","Computer Science","Commerce","Humanities"];
+
+    function populateDropdowns() {
+        const type = studentType.value;
+        gradeDropdown.innerHTML = '<option value="">Select Grade/Year</option>';
+        sectionDropdown.innerHTML = '<option value="">Select Section/Department</option>';
+        dynamicForm.style.display = "none";
+        schoolForm.style.display = "none";
+        collegeForm.style.display = "none";
+
+        if (type === "School") {
+            schoolGrades.forEach(g => gradeDropdown.innerHTML += `<option value="${g}">${g}</option>`);
+            schoolSections.forEach(s => sectionDropdown.innerHTML += `<option value="${s}">${s}</option>`);
+            dynamicForm.style.display = "block";
+            schoolForm.style.display = "block";
+        } else if (type === "College") {
+            collegeYears.forEach(y => gradeDropdown.innerHTML += `<option value="${y}">${y}</option>`);
+            collegeDepts.forEach(d => sectionDropdown.innerHTML += `<option value="${d}">${d}</option>`);
+            dynamicForm.style.display = "block";
+            collegeForm.style.display = "block";
+        }
+    }
+
+    function updateForm() {
+        const grade = gradeDropdown.value;
+        const section = sectionDropdown.value;
+        readonlySchoolGrade.value = grade;
+        readonlySchoolSection.value = section;
+        schoolGradeHidden.value = grade;
+        schoolSectionHidden.value = section;
+        readonlyCollegeGrade.value = grade;
+        readonlyCollegeDept.value = section;
+        collegeGradeHidden.value = grade;
+        collegeDeptHidden.value = section;
+    }
+
+    studentType.addEventListener('change', populateDropdowns);
+    gradeDropdown.addEventListener('change', updateForm);
+    sectionDropdown.addEventListener('change', updateForm);
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        document.getElementById('admissionForm').reset();
+        gradeDropdown.innerHTML = '<option value="">Select Grade/Year</option>';
+        sectionDropdown.innerHTML = '<option value="">Select Section/Department</option>';
+        dynamicForm.style.display = "none";
+        schoolForm.style.display = "none";
+        collegeForm.style.display = "none";
+        schoolPreview.style.display = 'none';
+        collegePreview.style.display = 'none';
+    });
+
+    document.getElementById('schoolPhoto').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = function() { schoolPreview.src = reader.result; schoolPreview.style.display = 'block'; }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+    document.getElementById('collegePhoto').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = function() { collegePreview.src = reader.result; collegePreview.style.display = 'block'; }
+        reader.readAsDataURL(e.target.files[0]);
+    });
+</script>
