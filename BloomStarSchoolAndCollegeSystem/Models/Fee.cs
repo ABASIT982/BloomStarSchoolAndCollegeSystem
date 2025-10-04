@@ -20,10 +20,16 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
+        public string FatherName { get; set; } = string.Empty;
+
+        [Required]
         public string ClassYear { get; set; } = string.Empty;
 
         [Required]
         public StudentSection Section { get; set; } = StudentSection.School;
+
+        [Required]
+        public string SectionOrDept { get; set; } = string.Empty;
 
         [Required]
         public decimal TotalFee { get; set; }
@@ -32,5 +38,7 @@ namespace BloomStarSchoolAndCollegeSystem.Models
         public decimal PaidAmount { get; set; }
 
         public decimal DueAmount { get; set; }
+
+        public string? PhotoUrl { get; set; } // optional
     }
 }

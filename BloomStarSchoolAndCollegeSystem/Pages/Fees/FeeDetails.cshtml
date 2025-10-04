@@ -1,0 +1,128 @@
+﻿@page
+@model BloomStarSchoolAndCollegeSystem.Pages.Fees.FeeDetailsModel
+@{
+    ViewData["Title"] = "Fee Details";
+}
+
+<div class="container mx-auto px-6 py-8">
+    <h2 class="text-3xl font-bold mb-6 text-blue-900">Manage Fees</h2>
+
+    <!-- Filters -->
+    <form id="filtersForm" method="get" class="flex flex-wrap items-center gap-4 mb-6">
+        <select id="filterSection" name="SelectedSection" class="border rounded px-3 py-2 w-48">
+            <option value="" selected>All Section</option>
+            <option value="School">School</option>
+            <option value="College">College</option>
+        </select>
+
+        <select id="filterClass" name="SelectedClassYear" class="border rounded px-3 py-2 w-48">
+            <option value="" selected>All Class/Year</option>
+        </select>
+
+        <select id="filterDept" name="SelectedSectionOrDept" class="border rounded px-3 py-2 w-60">
+            <option value="" selected>All Section/Department</option>
+        </select>
+
+        <input id="filterSearch" name="SearchQuery" class="border rounded px-3 py-2 w-72" placeholder="Search by student or father name..." />
+
+        <button type="button" id="applyBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Apply Filters</button>
+        <button type="button" id="resetBtn" class="bg-gray-300 text-gray-800 px-3 py-2 rounded hover:bg-gray-400">Reset</button>
+    </form>
+
+    <!-- Fee Table -->
+    <div class="overflow-x-auto shadow-lg rounded-lg">
+        <table id="feeTable" class="min-w-full bg-white">
+            <thead class="bg-blue-600 text-white">
+                <tr>
+                    <th class="px-4 py-2">Student Name</th>
+                    <th class="px-4 py-2">Father Name</th>
+                    <th class="px-4 py-2">Section/Class</th>
+                    <th class="px-4 py-2">Section/Dept</th>
+                    <th class="px-4 py-2">Type</th>
+                    <th class="px-4 py-2">Total Fee</th>
+                    <th class="px-4 py-2">Paid</th>
+                    <th class="px-4 py-2">Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.FilteredFees)
+                {
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">@f.Name</td>
+                        <td class="px-4 py-2">@f.FatherName</td>
+                        <td class="px-4 py-2">@f.ClassYear</td>
+                        <td class="px-4 py-2">@f.SectionOrDept</td>
+                        <td class="px-4 py-2">@f.Section</td>
+                        <td class="px-4 py-2">@f.TotalFee</td>
+                        <td class="px-4 py-2">@f.PaidAmount</td>
+                        <td class="px-4 py-2">@f.DueAmount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const filterSection = document.getElementById('filterSection');
+        const filterClass = document.getElementById('filterClass');
+        const filterDept = document.getElementById('filterDept');
+        const filterSearch = document.getElementById('filterSearch');
+        const applyBtn = document.getElementById('applyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const feeTableBody = document.querySelector('#feeTable tbody');
+
+        const schoolClasses = ["Nursery", "KG", "Prep", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"];
+        const schoolSections = ["Rose Model", "Rose", "Lily", "Daffodil"];
+        const collegeYears = ["First Year", "Second Year"];
+        const collegeDepts = ["Pre-Medical", "Pre-Engineering", "Computer Science", "Commerce", "Humanities"];
+
+        function updateFilterOptions(type) {
+            filterClass.innerHTML = '<option value="">All Class/Year</option>';
+            filterDept.innerHTML = '<option value="">All Section/Department</option>';
+
+            if (type === "School") {
+                schoolClasses.forEach(c => filterClass.innerHTML += `<option value="${c}">${c}</option>`);
+                schoolSections.forEach(s => filterDept.innerHTML += `<option value="${s}">${s}</option>`);
+            } else if (type === "College") {
+                collegeYears.forEach(c => filterClass.innerHTML += `<option value="${c}">${c}</option>`);
+                collegeDepts.forEach(s => filterDept.innerHTML += `<option value="${s}">${s}</option>`);
+            } else {
+                [...schoolClasses, ...collegeYears].forEach(c => filterClass.innerHTML += `<option value="${c}">${c}</option>`);
+                [...schoolSections, ...collegeDepts].forEach(s => filterDept.innerHTML += `<option value="${s}">${s}</option>`);
+            }
+        }
+
+        async function fetchFilteredFees() {
+            const params = new URLSearchParams();
+            if (filterSection.value) params.set('SelectedSection', filterSection.value);
+            if (filterClass.value) params.set('SelectedClassYear', filterClass.value);
+            if (filterDept.value) params.set('SelectedSectionOrDept', filterDept.value);
+            if (filterSearch.value) params.set('SearchQuery', filterSearch.value);
+
+            const res = await fetch(window.location.pathname + '?' + params.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+            const text = await res.text();
+            const tbodyMatch = text.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/i);
+            if (tbodyMatch) feeTableBody.innerHTML = tbodyMatch[1];
+        }
+
+        filterSection.addEventListener('change', () => { updateFilterOptions(filterSection.value); fetchFilteredFees(); });
+        filterClass.addEventListener('change', fetchFilteredFees);
+        filterDept.addEventListener('change', fetchFilteredFees);
+        filterSearch.addEventListener('input', () => setTimeout(fetchFilteredFees, 300));
+
+        applyBtn.addEventListener('click', fetchFilteredFees);
+        resetBtn.addEventListener('click', () => {
+            filterSection.value = '';
+            filterClass.innerHTML = '<option value="">All Class/Year</option>';
+            filterDept.innerHTML = '<option value="">All Section/Department</option>';
+            filterSearch.value = '';
+            updateFilterOptions('');
+            fetchFilteredFees();
+        });
+
+        // initialize dropdowns
+        updateFilterOptions('');
+    </script>
+}

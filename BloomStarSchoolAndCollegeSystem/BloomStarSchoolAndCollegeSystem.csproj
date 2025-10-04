@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Dashboard\" />
-    <Folder Include="Pages\Fees\" />
     <Folder Include="Pages\Reports\" />
     <Folder Include="Pages\Scholarships\" />
     <Folder Include="Services\" />
