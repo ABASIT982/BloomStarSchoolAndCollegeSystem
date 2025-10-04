@@ -6,15 +6,13 @@
 
 <h1 class="text-2xl font-bold mb-6 text-blue-900">School Students</h1>
 
-<form method="get" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-
-    <!-- Search -->
-    <input type="text" name="Search" value="@Model.Search"
+<!-- Filters (keeps your CSS & layout) -->
+<form id="filtersForm" method="get" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <input id="filterSearch" name="Search" value="@Model.Search"
            placeholder="Search by Id, Name or Phone"
            class="border rounded p-2 w-full" />
 
-    <!-- Grade Filter -->
-    <select name="GradeName" class="border rounded p-2 w-full">
+    <select id="filterGrade" name="GradeName" class="border rounded p-2 w-full">
         <option value="">All Grades</option>
         @foreach (var g in Model.AllGrades)
         {
@@ -24,8 +22,7 @@
         }
     </select>
 
-    <!-- Section Filter -->
-    <select name="SectionName" class="border rounded p-2 w-full">
+    <select id="filterSection" name="SectionName" class="border rounded p-2 w-full">
         <option value="">All Sections</option>
         @foreach (var s in Model.AllSections)
         {
@@ -35,51 +32,160 @@
         }
     </select>
 
-    <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">
-        Filter
-    </button>
+    <div class="flex items-center gap-2">
+        <input type="hidden" id="sortOrderInput" name="SortOrder" value="@Model.SortOrder" />
+        <button type="button" id="applyBtn" class="bg-blue-700 text-white px-4 py-2 rounded w-full">
+            Apply Filters
+        </button>
+        <button type="button" id="resetBtn" class="bg-gray-300 text-gray-800 px-3 py-2 rounded">
+            Reset
+        </button>
+    </div>
 </form>
 
 <!-- Sort Buttons -->
 <div class="mb-4 flex gap-3">
-    <a asp-page="./Index" asp-route-SortOrder="name_desc"
-       class="px-3 py-1 border rounded hover:bg-gray-200">
+    <button type="button" class="px-3 py-1 border rounded hover:bg-gray-200 sort-btn @(Model.SortOrder == "name_asc" ? "bg-gray-300" : "")" data-sort="name_asc">
+        Name ↑
+    </button>
+    <button type="button" class="px-3 py-1 border rounded hover:bg-gray-200 sort-btn @(Model.SortOrder == "name_desc" ? "bg-gray-300" : "")" data-sort="name_desc">
         Name ↓
-    </a>
-    <a asp-page="./Index" asp-route-SortOrder="grade_asc"
-       class="px-3 py-1 border rounded hover:bg-gray-200">
+    </button>
+    <button type="button" class="px-3 py-1 border rounded hover:bg-gray-200 sort-btn @(Model.SortOrder == "grade_asc" ? "bg-gray-300" : "")" data-sort="grade_asc">
         Grade ↑
-    </a>
-    <a asp-page="./Index" asp-route-SortOrder="grade_desc"
-       class="px-3 py-1 border rounded hover:bg-gray-200">
+    </button>
+    <button type="button" class="px-3 py-1 border rounded hover:bg-gray-200 sort-btn @(Model.SortOrder == "grade_desc" ? "bg-gray-300" : "")" data-sort="grade_desc">
         Grade ↓
-    </a>
+    </button>
 </div>
 
-<table class="min-w-full bg-white border border-gray-300">
-    <thead class="bg-blue-900 text-white">
-        <tr>
-            <th class="px-4 py-2 text-left">ID</th>
-            <th class="px-4 py-2 text-left">Name</th>
-            <th class="px-4 py-2 text-left">Grade</th>
-            <th class="px-4 py-2 text-left">Section</th>
-            <th class="px-4 py-2 text-left">Parent Name</th>
-            <th class="px-4 py-2 text-left">Parent Phone</th>
-            <th class="px-4 py-2 text-left">Address</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var s in Model.FilteredStudents)
-        {
-            <tr class="border-b hover:bg-gray-100">
-                <td class="px-4 py-2">@s.Id</td>
-                <td class="px-4 py-2">@s.Name</td>
-                <td class="px-4 py-2">@s.GradeName</td>
-                <td class="px-4 py-2">@s.SectionName</td>
-                <td class="px-4 py-2">@s.ParentName</td>
-                <td class="px-4 py-2">@s.ParentPhone</td>
-                <td class="px-4 py-2">@s.Address</td>
+<!-- Student Data Table -->
+<div class="overflow-x-auto shadow-lg rounded-lg">
+    <table id="studentsTable" class="min-w-full bg-white border border-gray-300">
+        <thead class="bg-blue-900 text-white">
+            <tr>
+                <th class="px-4 py-2 text-left">Photo</th>
+                <th class="px-4 py-2 text-left">ID</th>
+                <th class="px-4 py-2 text-left">Name</th>
+                <th class="px-4 py-2 text-left">Grade</th>
+                <th class="px-4 py-2 text-left">Section</th>
+                <th class="px-4 py-2 text-left">Parent Name</th>
+                <th class="px-4 py-2 text-left">Parent Phone</th>
+                <th class="px-4 py-2 text-left">Address</th>
             </tr>
+        </thead>
+        <tbody>
+            @if (Model.FilteredStudents != null && Model.FilteredStudents.Any())
+            {
+                foreach (var s in Model.FilteredStudents)
+                {
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="px-4 py-2 text-left">
+                            @if (!string.IsNullOrEmpty(s.PhotoPath))
+                            {
+                                <img src="@s.PhotoPath" alt="photo" class="w-12 h-12 rounded-full object-cover border" />
+                            }
+                            else
+                            {
+                                <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs border">
+                                    No Img
+                                </div>
+                            }
+                        </td>
+                        <td class="px-4 py-2">@s.Id</td>
+                        <td class="px-4 py-2">@s.Name</td>
+                        <td class="px-4 py-2">@s.GradeName</td>
+                        <td class="px-4 py-2">@s.SectionName</td>
+                        <td class="px-4 py-2">@s.ParentName</td>
+                        <td class="px-4 py-2">@s.ParentPhone</td>
+                        <td class="px-4 py-2">@s.Address</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-gray-500 py-4">No students found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        // Debounce helper
+        const debounce = (fn, delay = 300) => {
+            let t;
+            return (...args) => {
+                clearTimeout(t);
+                t = setTimeout(() => fn(...args), delay);
+            };
+        };
+
+        // Elements
+        const filterGrade = document.getElementById('filterGrade');
+        const filterSection = document.getElementById('filterSection');
+        const filterSearch = document.getElementById('filterSearch');
+        const applyBtn = document.getElementById('applyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const studentsTbody = document.querySelector('#studentsTable tbody');
+        const sortOrderInput = document.getElementById('sortOrderInput');
+        const sortButtons = Array.from(document.querySelectorAll('.sort-btn'));
+
+        function buildQueryString() {
+            const params = new URLSearchParams();
+            if (filterSearch && filterSearch.value) params.set('Search', filterSearch.value);
+            if (filterGrade && filterGrade.value) params.set('GradeName', filterGrade.value);
+            if (filterSection && filterSection.value) params.set('SectionName', filterSection.value);
+            if (sortOrderInput && sortOrderInput.value) params.set('SortOrder', sortOrderInput.value);
+            return params.toString();
         }
-    </tbody>
-</table>
+
+        async function fetchAndReplaceTable() {
+            const qs = buildQueryString();
+            const url = window.location.pathname + (qs ? ('?' + qs) : '');
+            try {
+                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const text = await res.text();
+                const tbodyMatch = text.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/i);
+                if (tbodyMatch && tbodyMatch[1]) {
+                    studentsTbody.innerHTML = tbodyMatch[1];
+                } else {
+                    console.warn('No tbody found in response.');
+                }
+            } catch (err) {
+                console.error('Error fetching students:', err);
+            }
+        }
+
+        // events
+        if (filterGrade) filterGrade.addEventListener('change', fetchAndReplaceTable);
+        if (filterSection) filterSection.addEventListener('change', fetchAndReplaceTable);
+        if (filterSearch) filterSearch.addEventListener('input', debounce(fetchAndReplaceTable, 350));
+        if (applyBtn) applyBtn.addEventListener('click', (e) => { e.preventDefault(); fetchAndReplaceTable(); });
+        if (resetBtn) resetBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (filterGrade) filterGrade.value = '';
+            if (filterSection) filterSection.value = '';
+            if (filterSearch) filterSearch.value = '';
+            if (sortOrderInput) sortOrderInput.value = '';
+            // remove active classes
+            sortButtons.forEach(b => b.classList.remove('bg-gray-300'));
+            fetchAndReplaceTable();
+        });
+
+        // sort buttons
+        sortButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.currentTarget;
+                const sort = target.getAttribute('data-sort') || '';
+                if (sortOrderInput) sortOrderInput.value = sort;
+                // active state
+                sortButtons.forEach(b => b.classList.remove('bg-gray-300'));
+                target.classList.add('bg-gray-300');
+                fetchAndReplaceTable();
+            });
+        });
+    </script>
+}

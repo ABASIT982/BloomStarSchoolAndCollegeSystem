@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BloomStarSchoolAndCollegeSystem.Data;
 using BloomStarSchoolAndCollegeSystem.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BloomStarSchoolAndCollegeSystem.Pages.Students.School
 {
@@ -21,7 +21,7 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Students.School
         public IList<SchoolStudent> FilteredStudents { get; set; } = new List<SchoolStudent>();
 
         [BindProperty(SupportsGet = true)]
-        public string? Search { get; set; }   // nullable to fix warning
+        public string? Search { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string? GradeName { get; set; }
@@ -32,14 +32,13 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Students.School
         [BindProperty(SupportsGet = true)]
         public string? SortOrder { get; set; }
 
-        // 📌 All Grades
+        // grade order from lowest to highest
         public List<string> AllGrades { get; } = new()
         {
             "Nursery", "KG", "Prep", "1st", "2nd", "3rd", "4th",
             "5th", "6th", "7th", "8th", "9th", "10th"
         };
 
-        // 📌 All Sections
         public List<string> AllSections { get; } = new()
         {
             "Rose Model", "Rose", "Lily", "Daffodil"
@@ -49,7 +48,7 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Students.School
         {
             var query = _context.SchoolStudents.AsQueryable();
 
-            // 🔍 Search
+            // search
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 query = query.Where(s =>
@@ -58,28 +57,36 @@ namespace BloomStarSchoolAndCollegeSystem.Pages.Students.School
                     s.Id.ToString().Contains(Search));
             }
 
-            // 🔎 Filter by Grade
+            // grade filter
             if (!string.IsNullOrWhiteSpace(GradeName))
             {
                 query = query.Where(s => s.GradeName == GradeName);
             }
 
-            // 🔎 Filter by Section
+            // section filter
             if (!string.IsNullOrWhiteSpace(SectionName))
             {
                 query = query.Where(s => s.SectionName == SectionName);
             }
 
-            // ↕ Sorting
-            query = SortOrder switch
+            var students = await query.AsNoTracking().ToListAsync();
+
+            // custom grade order dictionary
+            var gradeOrder = AllGrades.Select((g, i) => new { g, i })
+                                      .ToDictionary(x => x.g, x => x.i);
+
+            // sorting
+            students = SortOrder switch
             {
-                "name_desc" => query.OrderByDescending(s => s.Name),
-                "grade_asc" => query.OrderBy(s => s.GradeName),
-                "grade_desc" => query.OrderByDescending(s => s.GradeName),
-                _ => query.OrderBy(s => s.Name) // default sort by Name ascending
+                "name_desc" => students.OrderByDescending(s => s.Name).ToList(),
+                "grade_asc" => students.OrderBy(s => gradeOrder.ContainsKey(s.GradeName) ? gradeOrder[s.GradeName] : int.MaxValue).ToList(),
+                "grade_desc" => students.OrderByDescending(s => gradeOrder.ContainsKey(s.GradeName) ? gradeOrder[s.GradeName] : -1).ToList(),
+                "name_asc" or null => students.OrderBy(s => s.Name).ToList(),
+                _ => students.OrderBy(s => s.Name).ToList()
             };
 
-            FilteredStudents = await query.AsNoTracking().ToListAsync();
+            FilteredStudents = students;
+            // return Page() implicitly
         }
     }
 }
